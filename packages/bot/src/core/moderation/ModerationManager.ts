@@ -1,4 +1,4 @@
-import { EmbedField, TextChannel, User } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedField, TextChannel, User } from "discord.js";
 import { Bot } from "../../Bot";
 import { UserConfig } from "../../types/config/UserConfig";
 import { Util } from "../../util/Util";
@@ -35,7 +35,7 @@ export class ModerationManager {
             member.send({
                 embeds: [this.bot.createEmbed()
                     .setTitle(`:warning: Punishment Issued`)
-                    .setDescription(`Type of Punishment: \`Mute\`.\n\nTo view details of your punishment, click [here](https://discord.com/channels/${this.bot.mainGuild}/${this.bot.config.channels.jail})`)
+                    .setDescription(`Type of Punishment: \`Mute\`.`)
                 ]
             }).catch(e => null)
         })
@@ -80,14 +80,24 @@ export class ModerationManager {
         this.user.resolveMember().then(member => {
             if (!member) return;
             member.roles.add(this.bot.config.roles.rankbanned).catch(e => this.bot.log(`&c!!!!! Could not rankban user ${this.user.id} (${member.user.username})`));
-            member.send({
-                embeds: [this.bot.createEmbed()
-                    .setTitle(`:warning: Punishment Updated`)
-                    .setDescription(`Type of Punishment Issued: \`Ranked Ban\`.\n\nTo view details of your punishment, click [here](https://discord.com/channels/${this.bot.mainGuild}/${this.bot.config.channels.rankban})`)
-                ]
-            }).catch(e => null)
+            this.log({ offense: "rankban", offender: this.user.id, moderator: mod, reason: reason || 'No Reason Specified', duration: time }).then(msg => {
+                member.send({
+                    embeds: [this.bot.createEmbed()
+                        .setTitle(`:warning: Punishment Updated`)
+                        .setDescription(`Type of Punishment Issued: \`Ranked Ban\`.\n\n`)
+                    ],
+                    components: [
+                        new ActionRowBuilder<ButtonBuilder>()
+                            .addComponents(
+                                new ButtonBuilder()
+                                    .setLabel(`View Punishment Details`)
+                                    .setURL(msg!.url)
+                                    .setStyle(ButtonStyle.Link)
+                            )
+                    ]
+                }).catch(e => null)
+            })
         })
-        this.log({ offense: "rankban", offender: this.user.id, moderator: mod, reason: reason || 'No Reason Specified', duration: time })
         return this;
 
     }
@@ -147,7 +157,7 @@ export class ModerationManager {
             member.send({
                 embeds: [this.bot.createEmbed()
                     .setTitle(`:warning: Punishment Updated`)
-                    .setDescription(`Type of Punishment Issued: \`Ban\`.\n\nTo view details of your punishment, click on the button in the [about-punishment channel](https://discord.com/channels/${this.bot.mainGuild}/${this.bot.config.channels.jail})`)
+                    .setDescription(`Type of Punishment Issued: \`Ban\`.`)
                 ]
             }).catch(e => null)
         })
