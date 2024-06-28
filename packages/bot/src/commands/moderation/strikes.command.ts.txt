@@ -1,0 +1,26 @@
+import { Message } from "discord.js";
+import { Command, CommandContext } from "../../types";
+import { Util } from "../../util/Util";
+
+export default class StrikesCommand extends Command {
+    constructor() {
+        super({
+            name: 'strikes',
+            aliases: ['strikes'],
+            description: 'Shows the strikes of a user',
+            usage: '@user',
+            cooldown: 3,
+            type: 'moderation',
+        })
+    }
+    async run({ args, bot, flags, message, prefix, serverConf, userConfig, verifiedConfig }: CommandContext): Promise<void | Message<boolean>> {
+        const user = await bot.parseMember(args[0], message.guild) ?? message.member!;
+        const userconfig = bot.getUser(user.id);
+        bot.createEmbed(message)
+            .setTitle(`User Strikes`)
+            .setDescription(`${user}'s strikes: \`${userconfig.strikes.length}\``)
+            .addFields([
+                { name: `Recent Strikes`, value: !userconfig.strikes.length ? `No strikes to show!` : `${userconfig.strikes.sort((a, b) => b.date - a.date).slice(0, 5).map((strike, i) => `${Util.getDiscordTimeFormat(strike.date, 'D')} Issued by <@${strike.moderator}> \`${strike.reason}\``).join('\n')}` }
+            ]).send()
+    }
+}

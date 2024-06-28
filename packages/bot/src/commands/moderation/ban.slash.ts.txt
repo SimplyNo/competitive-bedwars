@@ -1,0 +1,38 @@
+import { Message, SlashCommandBuilder } from "discord.js";
+import { SlashCommand } from "../../types/command/SlashCommand";
+import { CommandContext } from "../../types";
+import { SlashCommandContext } from "../../types/command/SlashCommandContext";
+
+export default class BanCommand extends SlashCommand {
+    constructor() {
+        super({
+            name: "ban",
+            staffOnly: true,
+            slash: new SlashCommandBuilder()
+                .setName("ban")
+                .setDescription("PERMANENTLY ban a member from the SERVER.")
+                .addUserOption(subcmd =>
+                    subcmd
+                        .setName("user")
+                        .setDescription("The user to ban")
+                        .setRequired(true))
+                .addStringOption(subcmd =>
+                    subcmd
+                        .setName("reason")
+                        .setDescription("The reason for the ban")
+                        .setRequired(true)
+                )
+        });
+    }
+    async run({ bot, interaction, serverConf, verifiedConfig: userConfig }: SlashCommandContext): Promise<void | Message<boolean>> {
+        const user = interaction.options.get("user", true).user!;
+        const reason = interaction.options.get("reason", true).value as string;
+        const userconfig = bot.getUser(user.id);
+        userconfig.moderate().ban(interaction.user.id, reason);
+        return bot.createEmbed(interaction)
+            .setContent(`<@${user.id}>`)
+            .setColor('Red')
+            .setFooter({ text: `Punishment issued by ${interaction.user.username}` }).setTimestamp()
+            .setDescription(`**${user?.username}** has been **permanently banned** for *${reason}*`).send();
+    }
+}

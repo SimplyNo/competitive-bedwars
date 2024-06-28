@@ -1,0 +1,26 @@
+import { ChannelType, InteractionResponse, Message, SlashCommandBuilder, TextChannel, VoiceBasedChannel, VoiceChannel } from "discord.js";
+import { SlashCommand } from "../../types/command/SlashCommand";
+import { CommandContext } from "../../types";
+import { SlashCommandContext } from "../../types/command/SlashCommandContext";
+import { Util } from "../../util/Util";
+
+export default class ForceStartGameCommand extends SlashCommand {
+    constructor() {
+        super({
+            name: "forcestartgame",
+            adminOnly: true,
+            slash: new SlashCommandBuilder()
+                .setName("forcestartgame")
+                .setDescription("force start game")
+                .addChannelOption(subcmd =>
+                    subcmd
+                        .setName("channel")
+                        .setDescription("The queue channel")
+                        .addChannelTypes(ChannelType.GuildVoice)
+                        .setRequired(false))
+        });
+    }
+    async run({ bot, interaction, serverConf, verifiedConfig: userConfig }: SlashCommandContext): Promise<void | Message<boolean> | InteractionResponse> {
+
+    }
+}

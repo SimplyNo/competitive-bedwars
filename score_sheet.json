@@ -1,0 +1,59 @@
+{
+    "queueing_ranges": [
+        [
+            0,
+            999
+        ],
+        [
+            1000,
+            10000
+        ]
+    ],
+    "ranks": [
+        {
+            "name": "unranked",
+            "min": 0,
+            "max": 99,
+            "win": 25,
+            "lose": 10,
+            "bed_break": 5,
+            "mvp": 5
+        },
+        {
+            "name": "bronze",
+            "min": 100,
+            "max": 499,
+            "win": 25,
+            "lose": 15,
+            "bed_break": 5,
+            "mvp": 5
+        },
+        {
+            "name": "silver",
+            "min": 500,
+            "max": 999,
+            "win": 20,
+            "lose": 20,
+            "bed_break": 5,
+            "mvp": 10
+        },
+        {
+            "name": "gold",
+            "min": 1000,
+            "max": 1499,
+            "win": 20,
+            "lose": 30,
+            "bed_break": 10,
+            "mvp": 10
+        },
+        {
+            "name": "platinum",
+            "min": 1500,
+            "max": 3000,
+            "win": 20,
+            "lose": 40,
+            "bed_break": 15,
+            "mvp": 15
+        }
+    ]
+}

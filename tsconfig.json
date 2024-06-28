@@ -1,0 +1,19 @@
+{
+    "ts-node": {
+        "swc": false
+    },
+    "compilerOptions": {
+        "target": "ESNext",
+        "module": "ESNext",
+        "sourceMap": true,
+        "allowSyntheticDefaultImports": true,
+        "outDir": "dist",
+        "resolveJsonModule": true,
+        "moduleResolution": "node",
+        "esModuleInterop": true,
+        "strictNullChecks": true,
+        "experimentalDecorators": true,
+        "allowJs": false
+        // "strict": true
+    }
+}

@@ -1,0 +1,68 @@
+import { InteractionResponse, Message, SlashCommandBuilder } from "discord.js";
+import { SlashCommand } from "../../types/command/SlashCommand";
+import { AutoCompleteContext } from "../../types/command/AutoCompleteContext";
+import { SlashCommandContext } from "../../types/command/SlashCommandContext";
+import { VerifiedConfig } from "../../types/config/VerifiedConfig";
+import { RankedGame } from "../../core/games/RankedGame";
+
+export default class BedbreakCommand extends SlashCommand {
+    constructor() {
+        super({
+            name: "bedbreak",
+            adminOnly: true,
+            slash: new SlashCommandBuilder()
+                .setName("bedbreak")
+                .setDescription("Give someone bed breaks in a game.")
+                .addNumberOption(option =>
+                    option
+                        .setName('gameid')
+                        .setDescription('The game ID to force score.')
+                        .setRequired(true)
+                )
+                .addStringOption(option =>
+                    option
+                        .setName(`bedbreaker`)
+                        .setDescription(`The bed breakers of the game. Username separated by commas, E.g. simplyno, videocalls `)
+                        .setRequired(false)
+                )
+        })
+    }
+    async run({ bot, interaction, serverConf, userConfig, verifiedConfig }: SlashCommandContext): Promise<void | Message<boolean> | InteractionResponse<boolean>> {
+        const gameID = interaction.options.get('gameid')?.value as number;
+        const bedBreaker = interaction.options.get('bedbreaker')?.value as string || "";
+        const game = bot.rankedManager.getGameByID(gameID);
+        if (!game) return interaction.reply({ content: `Game not found!`, ephemeral: true });
+        if (game.voided) return interaction.reply({ content: `This game was voided.`, ephemeral: true });
+        if (!game.results) return interaction.reply({ content: `This game has not been scored yet.`, ephemeral: true });
+        let bedBreakers: VerifiedConfig[] = [];
+        for (const unparsed of bedBreaker.split(',').map(m => m.trim())) {
+            if (!unparsed) continue;
+            const verified = bot.getVerifiedUser({ username: unparsed });
+            const player = game.players.find(p => p.id === verified?.id);
+            if (!player) return interaction.reply({ content: `Could not assign bed breaker to **${unparsed}** as they weren't found in the game.`, ephemeral: true });
+            bedBreakers.push(player);
+        }
+        const getGameString = ({ voided, players, created, results, game }: RankedGame) => {
+            if (voided) return `Game Voided: *${voided.reason}*`;
+            const bedBreaks = results?.bedBreaks.map(p => players.find(pl => pl.id == p.id));
+            return `\`•\`**Bed Breakers:** ${bedBreaks?.map(p => `${p?.username}`).join(', ') || "No bed breakers"}`
+        }
+        const oldStr = getGameString(game);
+        game.scoreGame({
+            winner: game.results.winner,
+            mvps: game.results.mvps.map(m => ({ id: m.id })),
+            bedBreaks: bedBreakers.map(m => ({ id: m.id })),
+        }, true)
+        const newStr = getGameString(game);
+        return interaction.reply({
+            embeds: [
+                bot.createEmbed()
+                    .setDescription(`New Bed breakers set for **Game #${game.id}**.`)
+                    .addFields(([
+                        { name: `Old`, value: oldStr },
+                        { name: `New`, value: newStr }
+                    ]))
+            ]
+        })
+    }
+}

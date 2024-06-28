@@ -1,0 +1,68 @@
+import { InteractionResponse, Message, SlashCommandBuilder } from "discord.js";
+import { SlashCommand } from "../../types/command/SlashCommand";
+import { AutoCompleteContext } from "../../types/command/AutoCompleteContext";
+import { SlashCommandContext } from "../../types/command/SlashCommandContext";
+import { VerifiedConfig } from "../../types/config/VerifiedConfig";
+import { RankedGame } from "../../core/games/RankedGame";
+
+export default class MvpCommand extends SlashCommand {
+    constructor() {
+        super({
+            name: "mvp",
+            adminOnly: true,
+            slash: new SlashCommandBuilder()
+                .setName("mvp")
+                .setDescription("Make someone MVP of a game.")
+                .addNumberOption(option =>
+                    option
+                        .setName('gameid')
+                        .setDescription('The game ID to force score.')
+                        .setRequired(true)
+                )
+                .addStringOption(option =>
+                    option
+                        .setName(`mvp`)
+                        .setDescription(`MVP(s) of the game. Username separated by commas, E.g. simplyno, videocalls `)
+                        .setRequired(false)
+                )
+        })
+    }
+    async run({ bot, interaction, serverConf, userConfig, verifiedConfig }: SlashCommandContext): Promise<void | Message<boolean> | InteractionResponse<boolean>> {
+        const gameID = interaction.options.get('gameid')?.value as number;
+        const mvp = interaction.options.get('mvp')?.value as string || "";
+        const game = bot.rankedManager.getGameByID(gameID);
+        if (!game) return interaction.reply({ content: `Game not found!`, ephemeral: true });
+        if (game.voided) return interaction.reply({ content: `This game was voided.`, ephemeral: true });
+        if (!game.results) return interaction.reply({ content: `This game has not been scored yet.`, ephemeral: true });
+        let mvps: VerifiedConfig[] = [];
+        for (const unparsed of mvp.split(',').map(m => m.trim())) {
+            if (!unparsed) continue;
+            const verified = bot.getVerifiedUser({ username: unparsed });
+            const player = game.players.find(p => p.id === verified?.id);
+            if (!player) return interaction.reply({ content: `Could not assign MVP to **${unparsed}** as they weren't found in the game.`, ephemeral: true });
+            mvps.push(player);
+        }
+        const getGameString = ({ voided, players, created, results, game }: RankedGame) => {
+            if (voided) return `Game Voided: *${voided.reason}*`;
+            const mvps = results?.mvps.map(p => players.find(pl => pl.id == p.id));
+            return `\`•\`**MVP:** ${mvps?.map(p => `${p?.username}`).join(', ') || "No MVPs"}`
+        }
+        const oldStr = getGameString(game);
+        game.scoreGame({
+            winner: game.results.winner,
+            bedBreaks: game.results.bedBreaks.map(m => ({ id: m.id })),
+            mvps: mvps.map(m => ({ id: m.id })),
+        }, true)
+        const newStr = getGameString(game);
+        return interaction.reply({
+            embeds: [
+                bot.createEmbed()
+                    .setDescription(`New MVPs set for **Game #${game.id}**.`)
+                    .addFields(([
+                        { name: `Old`, value: oldStr },
+                        { name: `New`, value: newStr }
+                    ]))
+            ]
+        })
+    }
+}
