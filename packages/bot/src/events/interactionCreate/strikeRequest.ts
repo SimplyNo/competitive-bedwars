@@ -10,12 +10,12 @@ export default {
     async run(bot, interaction) {
         if (!interaction.isButton()) return;
         if (!interaction.inCachedGuild()) return;
-        if (interaction.guild.id !== bot.mainGuild) return;
+        if (interaction.guild.id !== bot.staffGuild) return;
         if (!interaction.customId.startsWith(`sr-`)) return;
         const [_, type, user, requester, channelID, messageID] = interaction.customId.split('-');
         const userconfig = bot.getUser(user);
         const requesterconfig = bot.getUser(requester);
-        const channel = await bot.parseChannel(channelID, interaction.guild);
+        const channel = await bot.parseChannel(channelID, bot.getMainGuild()!);
         const message = await channel?.messages.fetch(messageID);
         const moderator = interaction.member;
         if (type === 'accept') {

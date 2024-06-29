@@ -14,6 +14,7 @@ export default class StrikeRequestCommand extends Command {
         })
     }
     async run({ args, bot, flags, message, prefix, serverConf, userConfig, verifiedConfig }: CommandContext): Promise<void | Message<boolean>> {
+        if (!serverConf.isQueueOpen()) return bot.createErrorEmbed(message).setDescription(`The queue is currently closed.`).send();
         const user = message.mentions.members.first();
         if (!user) return message.reply(`You did not mention a user to strike request.`);
         if (user.id === message.author.id) return message.reply(`You cannot strike request yourself.`);
