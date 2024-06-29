@@ -79,18 +79,20 @@ export class UserConfig {
         const memberRoles = new MemberRoles(member);
         if (verifiedUser) {
             // do nicknming
-            console.log(`VERIFIED USER:`, verifiedUser.toJSON());
             const nickname = `${verifiedUser.username}${verifiedUser.nick ? ` | ${verifiedUser.nick} ` : ' '}(${Util.nFormatter(verifiedUser.rbw.elo, 1)})`;
             if (member.nickname !== nickname) {
                 await member.setNickname(nickname).catch(e => this.bot.log(`&cCould not set nickname for ${member.user.tag}`));
             }
             // add register role
             memberRoles.addRole(this.bot.config.roles.registered);
-
+            // add rank role
+            memberRoles.addRole(verifiedUser.ranked().getRankFromElo().role);
         } else {
-
+            await member.setNickname(null).catch(e => this.bot.log(`&cCould not remove nickname for ${member.user.tag}`));
+            memberRoles.removeRole(this.bot.config.roles.registered);
         }
-        const setRoles = !['280466694663831553'].includes(member.id) ? await memberRoles.set() : null;
+        // const setRoles = !['280466694663831553'].includes(member.id) ? await memberRoles.set() : null;
+        const setRoles = await memberRoles.set();
 
         if (setRoles) {
             // console.log(setRoles)

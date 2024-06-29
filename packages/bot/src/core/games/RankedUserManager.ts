@@ -44,6 +44,7 @@ export class RankedUserManager {
             bed_break: rank.bed_break,
             mvp: rank.mvp,
             min: rank.min,
+            role: rank.role
         }
     }
     public getWinsTillNextPosition() {

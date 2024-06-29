@@ -15,6 +15,8 @@ export default class ScreenshareCommand extends Command {
         })
     }
     async run({ bot, args, message, prefix, serverConf, verifiedConfig: verifiedUser }: CommandContext): Promise<void | Message<boolean>> {
+        if (!serverConf.isQueueOpen()) return bot.createErrorEmbed(message).setDescription(`The queue is currently closed.`).send();
+
         if (!args.length) return bot.createErrorEmbed(message).setDescription(`Command usage: \`=ss ${this.usage}\` with attached image of "don't log" being sent in chat.`).send()
         const user = await bot.parseMember(args[0], message.guild);
         const reason = args.slice(1).join(' ');
@@ -22,7 +24,7 @@ export default class ScreenshareCommand extends Command {
         if (!user) return bot.createErrorEmbed(message).setDescription(`You must provide a user to screenshare with.`).send();
         const userVerified = bot.getVerifiedUser({ id: user.id });
         if (user.id === message.author.id) return bot.createErrorEmbed(message).setDescription(`You can't screenshare yourself.`).send();
-        if (!userVerified) return bot.createErrorEmbed(message).setDescription(`The user you are trying to screenshare is not verified.`).send();
+        if (!userVerified) return bot.createErrorEmbed(message).setDescription(`The user you are trying to screenshare is not registered.`).send();
         if (!reason) return bot.createErrorEmbed(message).setDescription(`You must provide a reason for the screenshare.`).send();
         if (!attachment) return bot.createErrorEmbed(message).setDescription(`You must attach an image of "don't log" being sent in chat.`).send();
         setCommandCooldown('screenshare', message.author.id, 60 * 1000);

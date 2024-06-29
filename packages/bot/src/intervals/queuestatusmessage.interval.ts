@@ -20,10 +20,18 @@ export default class QueueStatusMessageInterval extends Interval {
         const queueMessageID = bot.getMainServerConfig().queueMessage?.messageID;
         let queueMessage = queueMessageID ? fetchMessage ? await queueTextChannel.messages.fetch(queueMessageID).catch(e => null) : queueTextChannel.messages.cache.get(queueMessageID) : null;
         const currentTimestamp = Date.now();
-        const queueMessageOptions = {
+        const queueMessageOptions = bot.getMainServerConfig().isQueueOpen() ? {
             embeds: [
                 bot.createEmbed()
-                    .setDescription(`**<:online:822183807862964225> Players Currently In Queue: ** \`${inQueue}\`\n\n*Updated ${Util.getDiscordTimeFormat(currentTimestamp, 'R')}*`)
+                    .setTitle(`<:online:822183807862964225> Queue Status [OPEN]`)
+                    .setDescription(`**Players Currently In Queue:** \`${inQueue}\`\n\n*Updated ${Util.getDiscordTimeFormat(currentTimestamp, 'R')}*`)
+            ]
+        } : {
+            embeds: [
+                bot.createEmbed()
+                    .setTitle(`<:offline:822183808076873738> Queue Status [CLOSED]`)
+                    .setDescription(`*Updated ${Util.getDiscordTimeFormat(currentTimestamp, 'R')}*`)
+                    .setColor('Red')
             ]
         }
         if (!queueMessage) {

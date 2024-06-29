@@ -54,7 +54,7 @@ export default {
             const dmMsg: MessageCreateOptions = {
                 embeds: [
                     {
-                        description: `You are now frozen in Competitive Bedwars for \`${ticket.reason}\`. You now have **5 minutes** to send the AnyDesk code in <#${ticket.channelId}>. If not, you will be banned for 3 days for stalling.`
+                        description: `You are now frozen in Competitive Bedwars for \`${ticket.reason}\`.\n\nYou now have **5 minutes** to send an AnyDesk code in <#${ticket.channelId}>. If not, you will be banned for 3 days for stalling.`
                     }
                 ]
             }

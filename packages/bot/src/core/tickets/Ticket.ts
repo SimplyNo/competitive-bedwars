@@ -43,16 +43,21 @@ export class Ticket {
     public async setRolePerms(role: string) {
         const channel = (await this.bot.parseChannel(this.channelId, this.bot.getMainGuild()!)) as TextChannel;
         if (!channel || !channel.isTextBased()) return;
-        channel.edit({
-            permissionOverwrites: [
-                ...(channel.permissionOverwrites.cache.filter(u => !this.users.includes(u.id)).values()),
+        channel.permissionOverwrites.set(
+            [
+                // ...(channel.permissionOverwrites.cache.filter(u => !this.users.includes(u.id)).values()),
                 {
                     id: role,
                     type: OverwriteType.Role,
                     allow: [PermissionFlagsBits.SendMessages, PermissionFlagsBits.ViewChannel]
+                },
+                {
+                    id: this.bot.getMainGuild()?.roles.everyone!,
+                    type: OverwriteType.Role,
+                    deny: [PermissionFlagsBits.ViewChannel]
                 }
             ]
-        })
+        )
     }
     public async addUser(user: string) {
         this.users.push(user);
@@ -121,7 +126,7 @@ export class Ticket {
         const user = await this.bot.getUser(this.createdBy).resolveDiscord();
         const attachment = await discordTranscripts.createTranscript<ExportReturnType.Attachment>(channel, { returnType: ExportReturnType.Attachment, saveImages: true }).catch(e => null);
         if (!attachment) return;
-        const transcriptChannel = await this.bot.parseChannel(this.bot.config.channels.ticketLogsTranscript, this.bot.getMainGuild()!);
+        const transcriptChannel = await this.bot.parseChannel(this.bot.config.channels.ticketLogsTranscript, this.bot.getStaffGuild()!);
         const transcript = await transcriptChannel?.send({ content: `#${this.id}, closed by ${member.user.username}`, files: [attachment.setSpoiler()] });
         const link = `https://mahto.id/chat-exporter?url=${transcript?.attachments.first()?.url}`;
         const msg = await user?.send({
@@ -256,7 +261,7 @@ export class Ticket {
             const attachment = await discordTranscripts.createTranscript<ExportReturnType.Attachment>(channel, { returnType: ExportReturnType.Attachment }).catch(e => null);
 
             if (attachment) {
-                const transcriptChannel = await this.bot.parseChannel(this.bot.config.channels.ticketLogsTranscript, this.bot.getMainGuild()!);
+                const transcriptChannel = await this.bot.parseChannel(this.bot.config.channels.ticketLogsTranscript, this.bot.getStaffGuild()!);
                 const transcript = await transcriptChannel?.send({ content: `#${this.id}, deleted by ${member.user.username}`, files: [attachment.setSpoiler()] });
                 const link = `https://mahto.id/chat-exporter?url=${transcript?.attachments.first()?.url}`;
                 this.bot.logger.log(this.bot.config.channels.ticketLogs, {

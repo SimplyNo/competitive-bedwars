@@ -18,6 +18,7 @@ export class ServerConfig {
     queueMessage?: { channelID: string, messageID: string };
     autoScoreStatusMessage?: { channelID: string, messageID: string };
     partyChannels: { [key: string]: { id: string, startTime: number | null, messageID: string | null } } = {};
+    queueStatus: 'closed' | 'open' = 'open';
     constructor(private bot: Bot, options: Partial<ServerConfig>) {
         Object.assign(this, options);
     }
@@ -30,6 +31,9 @@ export class ServerConfig {
                 obj[key] = value;
                 return obj;
             }, {});
+    }
+    public isQueueOpen() {
+        return this.queueStatus === 'open';
     }
     public isPartyChannel(channelID: string) {
         return Object.values(this.partyChannels).some(c => c?.id === channelID);

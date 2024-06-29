@@ -7,13 +7,13 @@ import { AutoCompleteContext } from "../../types/command/AutoCompleteContext";
 import { verifiedUsers } from "../../Bot";
 import { VerifiedConfig } from "../../types/config/VerifiedConfig";
 
-export default class UpdateCommand extends SlashCommand {
+export default class UpdateEloCommand extends SlashCommand {
     constructor() {
         super({
-            name: "update",
+            name: "updateelo",
             adminOnly: true,
             slash: new SlashCommandBuilder()
-                .setName("update")
+                .setName("updateelo")
                 .setDescription("updates the picked users elo to whatever you put it as")
                 .addUserOption(subcmd =>
                     subcmd
@@ -31,8 +31,8 @@ export default class UpdateCommand extends SlashCommand {
     }
     async autocomplete({ bot, interaction, serverConf, userConfig, verifiedConfig }: AutoCompleteContext): Promise<void> {
         const user = interaction.options.get("user")?.value as string || userConfig.id;
-        let elo = (interaction.options.get("elo")?.value || 300) as number;
-        if (isNaN(elo)) elo = 300;
+        let elo = (interaction.options.get("elo")?.value || 0) as number;
+        if (isNaN(elo)) elo = 0;
         const userConf = bot.getUser(user);
         const verified = userConf.getVerified();
         if (!verified) return interaction.respond([{ name: "This user is not registered.", value: "0" }]);

@@ -34,7 +34,7 @@ export class ModerationManager {
             // DM User
             member.send({
                 embeds: [this.bot.createEmbed()
-                    .setTitle(`:warning: Punishment Issued`)
+                    .setTitle(`Punishment Issued`)
                     .setDescription(`Type of Punishment: \`Mute\`.`)
                 ]
             }).catch(e => null)
@@ -56,7 +56,7 @@ export class ModerationManager {
             }
             member.send({
                 embeds: [this.bot.createEmbed()
-                    .setTitle(`:warning: Punishment Lifted`)
+                    .setTitle(`Punishment Lifted`)
                     .setDescription(`Punishment Lifted: \`Mute\`.\n\nYou have been unmuted. Enjoy the server!`)
                 ]
             }).catch(e => null)
@@ -83,8 +83,8 @@ export class ModerationManager {
             this.log({ offense: "rankban", offender: this.user.id, moderator: mod, reason: reason || 'No Reason Specified', duration: time }).then(msg => {
                 member.send({
                     embeds: [this.bot.createEmbed()
-                        .setTitle(`:warning: Punishment Updated`)
-                        .setDescription(`Type of Punishment Issued: \`Ranked Ban\`.\n\n`)
+                        .setTitle(`Punishment Issued`)
+                        .setDescription(`You have been \`rank banned\`.`)
                     ],
                     components: [
                         new ActionRowBuilder<ButtonBuilder>()
@@ -108,7 +108,7 @@ export class ModerationManager {
             member.roles.remove(this.bot.config.roles.rankbanned);
             member.send({
                 embeds: [this.bot.createEmbed()
-                    .setTitle(`:warning: Punishment Lifted`)
+                    .setTitle(`Punishment Lifted`)
                     .setDescription(`Punishment Lifted: \`Ranked Ban\`.\n\nYou are free to go. Enjoy!`)
                 ]
             }).catch(e => null)
@@ -132,7 +132,7 @@ export class ModerationManager {
             member.roles.set([...member.roles.cache.map(r => r.id).filter(r => [this.bot.config.roles.muted, this.bot.config.roles.rankbanned, this.bot.config.roles.banned].includes(r)), this.bot.config.roles.banned]).catch(e => this.bot.log(`&c!!!!! Could not ban user ${this.user.id} (${member.user.username})`));
             member.send({
                 embeds: [this.bot.createEmbed()
-                    .setTitle(`:warning: Punishment Updated`)
+                    .setTitle(`Punishment Updated`)
                     .setDescription(`Type of Punishment Issued: \`Ban\`.\n\nTo view details of your punishment, click on the button in the [here](https://discord.com/channels/${this.bot.mainGuild}/${this.bot.config.channels.jail})`)
                 ]
             }).catch(e => null)
@@ -156,7 +156,7 @@ export class ModerationManager {
             member.roles.set([...member.roles.cache.map(r => r.id).filter(r => [this.bot.config.roles.muted, this.bot.config.roles.rankbanned, this.bot.config.roles.banned].includes(r)), this.bot.config.roles.banned]).catch(e => this.bot.log(`&c!!!!! Could not ban user ${this.user.id} (${member.user.username})`));
             member.send({
                 embeds: [this.bot.createEmbed()
-                    .setTitle(`:warning: Punishment Updated`)
+                    .setTitle(`Punishment Updated`)
                     .setDescription(`Type of Punishment Issued: \`Ban\`.`)
                 ]
             }).catch(e => null)
@@ -177,7 +177,7 @@ export class ModerationManager {
             }
             member.send({
                 embeds: [this.bot.createEmbed()
-                    .setTitle(`:warning: Punishment Lifted`)
+                    .setTitle(`Punishment Lifted`)
                     .setDescription(`Punishment Lifted: \`Server Ban\`.\n\nYou have been unbanned from the server. Enjoy!`)
                 ]
             }).catch(e => null)

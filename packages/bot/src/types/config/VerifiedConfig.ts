@@ -5,6 +5,7 @@ import { MemberRoles } from "../../util/MemberRoles";
 import { ModerationManager, ban, mute, strike } from "../../core/moderation/ModerationManager";
 import { RankedGameManager } from "../../core/games/RankedGameManager";
 import { RankedUserManager } from "../../core/games/RankedUserManager";
+import { Wrappers } from "../../wrappers/Wrappers";
 const memberUpdateCache = new Collection<string, { expire: number }>();
 type NonFunctionProperties<T> = {
     [K in keyof T]: T[K] extends Function ? never : K
@@ -87,6 +88,20 @@ export class VerifiedConfig {
     }
     public getVerified() {
         return this.bot.getVerifiedUser({ id: this.id });
+    }
+    public async updateHypixelData(options?: { data?: any, force?: boolean }) {
+        const { data, force } = options || {};
+        if (this.lastUpdate + 5 * 60 * 1000 > Date.now() && !force) return;
+        this.bot.log(`Updating hypixel data of ${this.username}`);
+        let hypixelData = data || await Wrappers.hypixel.player(this.uuid);
+        if (!hypixelData || !hypixelData.displayname) return;
+        const { displayname, emojiRank } = hypixelData;
+        this.set({
+            username: displayname,
+            emojiRank,
+            lastUpdate: Date.now()
+        })
+        this.getUser().updateMember();
     }
 }
 

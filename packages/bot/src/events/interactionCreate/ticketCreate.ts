@@ -18,18 +18,20 @@ export default {
         if (check !== 'ticket' || action !== 'create') return;
         const userConfig = bot.getUser(interaction.user.id);
         const serverConfig = bot.getServerConfig(interaction.guild.id);
-        let name = 'ticket', allowedRoles: string[] = [], content = "", message = "", title = "";
+        let name = 'ticket', allowedRoles: string[] = [], content = "", message = "", title = "", category = "";
         if (type === 'general') {
             name = 'general';
             title = 'General Ticket';
+            category = bot.config.channels.ticketGeneralCategory;
         } else if (type === 'scoring') {
             name = 'scoring';
             title = 'Scoring Ticket';
             content = `<@&${bot.config.roles.staff}>`
-            // allowedRoles = [bot.config.roles.scorer];
+            category = bot.config.channels.ticketScoringCategory;
         } else if (type === 'appeal') {
             name = 'appeal';
             title = 'Appeal Ticket';
+            category = bot.config.channels.ticketAppealsCategory;
         }
         interaction.reply({ content: `Creating a new **${name} ticket**...`, ephemeral: true })
         const ID = serverConfig.tickets.length + 1;
@@ -44,10 +46,11 @@ export default {
         })
         serverConfig.ticketManager().createTicket(ticket);
         // create channel
+        console.log(allowedRoles);
         const channel = await interaction.guild.channels.create({
             name: ticket.name,
             type: ChannelType.GuildText,
-            parent: bot.config.channels.ticketCategory,
+            parent: category,
             permissionOverwrites: [
                 ...bot.config.tickets.allowedRoles.map(r => ({
                     id: r,

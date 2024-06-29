@@ -11,6 +11,7 @@ export default class PartyList extends Command {
         })
     }
     async run({ bot, args, message, prefix, serverConf, verifiedConfig, userConfig }: CommandContext): Promise<void | Message<boolean>> {
+        if (!serverConf.isQueueOpen()) return bot.createErrorEmbed(message).setDescription(`The queue is currently closed.`).send();
         if (!verifiedConfig) return bot.createErrorEmbed(message).setDescription(`You must be registered to use this command.`).send();
 
         const targetMember = (await bot.parseMember(args.join(' '), message.guild) || message.member);

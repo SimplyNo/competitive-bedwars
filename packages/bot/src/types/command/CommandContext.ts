@@ -6,7 +6,7 @@ import { VerifiedConfig } from "../config/VerifiedConfig";
 import { ServerConfig } from "../config/ServerConfig";
 export type commandFlags = { [key: string]: { name: string, value: string, index: number, fullValue: string } }
 export class CommandContext {
-    public serverConf: Partial<ServerConfig>;
+    public serverConf: ServerConfig;
     public prefix: string;
     public verifiedConfig?: VerifiedConfig & { uuid: string };
     public userConfig: UserConfig;

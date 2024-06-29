@@ -12,6 +12,7 @@ export default class JoinCommand extends Command {
         })
     }
     async run({ bot, args, message, prefix, serverConf, verifiedConfig }: CommandContext): Promise<void | Message<boolean>> {
+        if (!serverConf.isQueueOpen()) return bot.createErrorEmbed(message).setDescription(`The queue is currently closed.`).send();
         if (!verifiedConfig) return bot.createErrorEmbed(message).setDescription(`You must be verified to use this command.`).send();
         if (await verifiedConfig.getUser().isFrozen()) return bot.createErrorEmbed(message).setDescription(`You are currently frozen and cannot join the queue.`).send();
 

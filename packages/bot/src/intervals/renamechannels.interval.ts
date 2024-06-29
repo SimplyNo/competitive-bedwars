@@ -10,6 +10,7 @@ export default class RenameChannelInterval extends Interval {
         super.start(bot);
     }
     async run(bot: Bot, ...args: any) {
+        if (!bot.getMainServerConfig().isQueueOpen()) return;
         const queueChannel = await bot.parseChannel(bot.config.channels.queue, bot.getMainGuild()!);
         const playing = bot.rankedManager.getActiveGames().reduce((acc, game) => acc + game.players.length, 0);
         const inQueue = bot.matchMaking.getAllInQueue().length;

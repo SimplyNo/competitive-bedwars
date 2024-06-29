@@ -36,7 +36,7 @@ export class MemberRoles {
         if (this.rolesToAdd.length || this.rolesToRemove.length) {
             const roles = this.array();
             // console.log('actually setting sroles...')
-            await this.member.roles.set(roles).catch(e => console.log(e));
+            await this.member.roles.set(roles).catch(e => console.log(`ERROR WHILE SETTING ROLES ?!?!?!`, e));
             return roles;
         }
         return null;

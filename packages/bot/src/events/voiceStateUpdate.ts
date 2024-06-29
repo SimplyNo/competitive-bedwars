@@ -12,7 +12,7 @@ export default {
         const serverConfig = bot.getMainServerConfig();
         const { queue } = bot.config.channels;
         const verifiedUser = bot.getVerifiedUser({ id: newState.member?.id });
-        if (!verifiedUser) return bot.log(`&e[QUEUES] User ${newState.member?.user.tag} is not verified.`);
+        if (!verifiedUser) return bot.log(`&e[QUEUES] User ${newState.member?.user.tag} is not registered.`);
         const currentGame = bot.rankedManager.getGameByMember(verifiedUser.id);
         if (currentGame) {
             // console.log(`current timeout list:`, gameChannelLeavesTimeout);

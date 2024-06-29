@@ -10,9 +10,9 @@ export default class AutoScoreStatusInterval extends Interval {
     }
     async run(bot: Bot, ...args: any): Promise<void> {
         const status = await bot.api.autoscore.get('status');
-        const { channelID, messageID } = bot.getMainServerConfig().autoScoreStatusMessage || {};
+        const { channelID, messageID } = bot.getStaffServerConfig().autoScoreStatusMessage || {};
         if (!channelID || !messageID) return;
-        const channel = await bot.parseChannel(channelID, bot.getMainGuild()!);
+        const channel = await bot.parseChannel(channelID, bot.getStaffGuild()!);
         if (!channel) return;
         const message = await channel.messages.fetch(messageID).catch(e => null);
         let msg: MessageEditOptions;
@@ -46,7 +46,7 @@ ${statusMessages.join('\n') || "Failed to find bots."}
         } else {
             const newMsg = await channel.send(msg as MessageCreateOptions).catch(e => null);
             if (!newMsg) return;
-            bot.getMainServerConfig().set({
+            bot.getStaffServerConfig().set({
                 autoScoreStatusMessage: {
                     channelID: channel.id,
                     messageID: newMsg.id

@@ -5,7 +5,7 @@ import { ApplicationCommandPermissionType, ApplicationCommandPermissions, Client
 import fs from 'fs';
 import path from 'path';
 
-import { discordToken, clientID, mainServer, roles } from './config.json';
+import { discordToken, clientID, mainServer, roles, staffServer } from './config.json';
 import { SlashCommand } from './packages/bot/src/types/command/SlashCommand';
 const bot = new Client({ intents: ["Guilds"], });
 bot.login(discordToken);
@@ -15,6 +15,7 @@ bot.on("ready", async () => {
     const rest = new REST({ version: '9' }).setToken(discordToken);
 
     const guild = bot.guilds.cache.get(mainServer);
+    const staffGuild = bot.guilds.cache.get(staffServer);
     if (!guild) return console.error("Main server not found?");
     const commandsJSON: any[] = [];
     const commands: SlashCommand[] = [];
@@ -38,6 +39,8 @@ bot.on("ready", async () => {
 
     console.log('Reloading slash commands...');
     const cmds = await guild.commands.set(commandsJSON);
+    await staffGuild?.commands.set(commandsJSON);
+    if (staffGuild) console.log(`Reloaded commands in staff server`);
     console.log('Reloaded slash commands! Setting permissions of commands...');
     console.log('Ending process...');
     process.exit(0);

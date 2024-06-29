@@ -9,6 +9,7 @@ export default class MatchMakingInterval extends Interval {
         super('matchmaking', 5000);
     }
     async run(bot: Bot, ...args: any): Promise<void> {
+        if (!bot.getMainServerConfig().isQueueOpen()) return;
         if (bot.matchMaking.groupsInQueue.size > 0) {
             bot.matchMaking.checkForMatch();
         }

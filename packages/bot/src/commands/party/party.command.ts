@@ -44,6 +44,7 @@ export default class PartyCommand extends Command {
         })
     }
     async run({ bot, args, message, prefix, serverConf, verifiedConfig, userConfig }: CommandContext): Promise<void | Message<boolean>> {
+        if (!serverConf.isQueueOpen()) return bot.createErrorEmbed(message).setDescription(`The queue is currently closed.`).send();
         moment.locale('en-short');
         if (!verifiedConfig) return bot.createErrorEmbed(message).setDescription(`You must be registered to use this command.`).send();
         let party = bot.partyManager.getPartyByMember(verifiedConfig.id);
@@ -51,55 +52,7 @@ export default class PartyCommand extends Command {
         const subcommand = args.shift()?.toLowerCase();
         const game = bot.rankedManager.getGameByTextChannel(message.channel.id);
 
-        if (!subcommand && !game) return bot.createErrorEmbed(message).setDescription(`=p @user
-Party System:
-
-=p
-=party
-
-Inviting:
-=p @user
-=party @user
-=party invite @user
-=p invites
-=party invites
-
-Accepting/Denying:
-=p accept @user -- for when you have multiple incoming invites
-=party accept @user
-=p accept -- for when you have one incoming invite (will error when you have multiple incoming)
-=party accept
-=p deny
-=party deny
-
-Transfer:
-=p transfer @user
-=party transfer @user
-
-Leaving:
-=p leave
-=party leave
-
-Disbanding:
-=p disband
-=party disband
-
-Autowarp:
-=p autowarp
-=party autowarp
-
-Warp:
-=p warp
-=party warp
-
-Kicking:
-=p kick @user
-=party kick @user
-
-List:
-=pl
-=p list
-=party list`).send();
+        if (!subcommand && !game) return bot.createErrorEmbed(message).setTitle(`Party System`).setDescription(`Use one of these subcommands: ${['kick', 'disband', 'autowarp', 'list', 'accept', 'leave', 'invites', 'warp', 'invite'].map(c => `\`${c}\``).join(', ')}`).send();
         if (!subcommand) return;
         const targetMember = await bot.parseMember(args.slice(0).join(' '), message.guild);
 

@@ -43,8 +43,8 @@ Appeals: Competitive ban, mute, and staff decision appeals.`)
     jailMessage: (bot) => ({
         embeds: [
             bot.createEmbed()
-                .setTitle(`YOU HAVE BEEN PUNISHED`)
-                .setDescription(`punishment message\nur punishmenet could be a MUTE or a BAN\nclick to elarn about punishmenet\nappeal in tickets / or buy unban\nblah blah blahbmdpomdop`)
+                .setTitle(`a`)
+                .setDescription(`a`)
         ],
         components: [
             new ActionRowBuilder<ButtonBuilder>()

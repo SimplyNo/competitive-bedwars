@@ -36,6 +36,7 @@ export class Bot extends Client {
     public messageEditRateLimits = new Collection<string, number>();
     public config = config;
     public mainGuild = config.mainServer;
+    public staffGuild = config.staffServer;
     public tempServerConfig = new Collection<string, tempServerConfig>();
     public logger = new Logger(this);
     public matchMaking = new MatchMaker(this);
@@ -58,6 +59,12 @@ export class Bot extends Client {
     }
     public getMainGuild() {
         return this.mainGuild ? this.guilds.cache.get(this.mainGuild) : undefined;
+    }
+    public getStaffGuild() {
+        return this.staffGuild ? this.guilds.cache.get(this.staffGuild) : undefined;
+    }
+    public getStaffServerConfig() {
+        return this.getServerConfig(this.staffGuild!);
     }
     public getMainServerConfig() {
         return this.getServerConfig(this.mainGuild!);

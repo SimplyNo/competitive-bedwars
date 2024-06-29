@@ -171,6 +171,7 @@ ${party ? party.members.map(m => `<@${m.id}> ${!connectedMembers.has(m.id) ? !th
 
     }
     async add(player: VerifiedConfig) {
+        if (!this.bot.getMainServerConfig().isQueueOpen()) return;
         // console.log(`Adding to queue:`, player.username)
         if ((await player.getUser().isFrozen())) return console.error(`${player.username} tried to queue, but is frozen.`);
         if ((await player.getUser().isRankBanned())) return console.error(`${player.username} tried to queue, but is rank banned.`);
@@ -192,6 +193,7 @@ ${party ? party.members.map(m => `<@${m.id}> ${!connectedMembers.has(m.id) ? !th
         return [Math.max(group.highestElo - eloRange, 0), group.highestElo + eloRange]
     }
     async checkForMatch() {
+        if (!this.bot.getMainServerConfig().isQueueOpen()) return;
         let games: queueGroup[][] = [];
         const allGroups = [...this.groupsInQueue.values()];
         // console.log(`------------------ start --------------------`)
