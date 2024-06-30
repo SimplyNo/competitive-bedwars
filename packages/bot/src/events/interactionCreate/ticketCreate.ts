@@ -22,6 +22,7 @@ export default {
         if (type === 'general') {
             name = 'general';
             title = 'General Ticket';
+            content = `<@&${bot.config.roles.staff}>`
             category = bot.config.channels.ticketGeneralCategory;
         } else if (type === 'scoring') {
             name = 'scoring';
@@ -31,6 +32,7 @@ export default {
         } else if (type === 'appeal') {
             name = 'appeal';
             title = 'Appeal Ticket';
+            content = `<@&${bot.config.roles.staff}>`
             category = bot.config.channels.ticketAppealsCategory;
         }
         interaction.reply({ content: `Creating a new **${name} ticket**...`, ephemeral: true })

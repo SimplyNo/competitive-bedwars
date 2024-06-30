@@ -128,7 +128,6 @@ export class Ticket {
         if (!attachment) return;
         const transcriptChannel = await this.bot.parseChannel(this.bot.config.channels.ticketLogsTranscript, this.bot.getStaffGuild()!);
         const transcript = await transcriptChannel?.send({ content: `#${this.id}, closed by ${member.user.username}`, files: [attachment.setSpoiler()] });
-        const link = `https://mahto.id/chat-exporter?url=${transcript?.attachments.first()?.url}`;
         const msg = await user?.send({
             embeds: [
                 this.bot.createEmbed()
@@ -138,9 +137,9 @@ export class Ticket {
             components: [
                 new ActionRowBuilder<ButtonBuilder>().addComponents(
                     new ButtonBuilder()
-                        .setStyle(ButtonStyle.Link)
-                        .setURL(link)
-                        .setLabel('View Ticket Transcript')
+                        .setStyle(ButtonStyle.Primary)
+                        .setCustomId(`ticketview-${this.id}-${transcriptChannel?.id}-${transcript?.id}`)
+                        .setLabel('Load Transcript')
                 )
             ]
         }).catch(e => console.error(`Failed to DM ${user.username} about ticket being locked.`))
@@ -263,7 +262,6 @@ export class Ticket {
             if (attachment) {
                 const transcriptChannel = await this.bot.parseChannel(this.bot.config.channels.ticketLogsTranscript, this.bot.getStaffGuild()!);
                 const transcript = await transcriptChannel?.send({ content: `#${this.id}, deleted by ${member.user.username}`, files: [attachment.setSpoiler()] });
-                const link = `https://mahto.id/chat-exporter?url=${transcript?.attachments.first()?.url}`;
                 this.bot.logger.log(this.bot.config.channels.ticketLogs, {
                     embeds: [
                         this.bot.createEmbed()
@@ -273,15 +271,14 @@ export class Ticket {
                     components: [
                         new ActionRowBuilder<ButtonBuilder>().addComponents(
                             new ButtonBuilder()
-                                .setURL(link)
-                                .setStyle(ButtonStyle.Link)
-                                .setLabel('View Ticket Transcript')
+                                .setCustomId(`ticketview-${this.id}-${transcriptChannel?.id}-${transcript?.id}`)
+                                .setStyle(ButtonStyle.Primary)
+                                .setLabel('Load Transcript')
                         )
                     ]
                 });
                 this.bot.api.workers.deleteChannel(channel.id);
             }
-
         }
     }
     // public async sendLockMessage(ticket: Ticket, channel: TextBasedChannel, options: BaseMessageOptions) {

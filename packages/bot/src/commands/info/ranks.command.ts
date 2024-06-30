@@ -12,7 +12,7 @@ export default class RanksCommand extends Command {
         bot.createEmbed(message)
             .setTitle(`Competitive Bedwars Ranks`)
             .setDescription(`${ranks.map(({ role, bed_break, lose, max, min, mvp, name, win }) =>
-                `<@&${role}>\nWin (+${win}) | Loss (-${lose}) | MVP (+${mvp}) | Bed Break (+${bed_break})`).join('\n')}`)
+                `<@&${role}>\nWin (+${win}) | Loss (-${lose}) | MVP (+${mvp}) | Bed Break (+${bed_break})`).join('\n\n')}`)
             .send()
     }
 }
