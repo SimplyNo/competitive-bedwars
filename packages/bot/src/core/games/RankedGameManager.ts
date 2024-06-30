@@ -10,7 +10,7 @@ export const rbwGames = new Enmap<string, RawRankedGame>({
     name: 'games'
 });
 
-export type validStats = 'wins' | 'losses' | 'mvps' | 'streak' | 'wlr' | 'games' | 'bedsBroken' | 'elo';
+export type validStats = 'wins' | 'losses' | 'mvps' | 'streak' | 'wlr' | 'games' | 'bedsBroken' | 'elo' | 'commends';
 export class RankedGameManager {
     private gameInstances = new Collection<string, RankedGame>();
     private games = rbwGames;
@@ -39,10 +39,15 @@ export class RankedGameManager {
     public async createGame(groups: { players: VerifiedConfig[] }[]) {
         const id = rbwGames.size + 1;
         const players = groups.map(g => g.players).flat();
+
         const game = new RankedGame(this.bot, { id, players, active: true, created: Date.now() });
+
         this.gameInstances.set(id.toString(), game);
         rbwGames.set(id.toString(), game.toJSON());
+
+
         const { team1, team2 } = await this.createBalancedTeams(groups);
+        // return console.log({ team1: team1.map(p => p.username), team2: team2.map(p => p.username) });
         console.log(`match creation:`, groups)
         const { textChannel, voiceChannelTeam1, voiceChannelTeam2 } = await this.createTeamChannels(id.toString(), players);
         if (!textChannel || !voiceChannelTeam1 || !voiceChannelTeam2) return console.error(`!!! FAILED TO CREATE GAME: COULDNT CREATE CHANNELS?`);

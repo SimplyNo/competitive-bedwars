@@ -124,6 +124,7 @@ export class RankedGame {
                 await ScoreImage.generateScoreImage(this.id, results.winner, scoringPlayers)
             ]
         })
+        this.players.forEach(p => p.getUser().updateMember(true));
         // this.bot.logger.log(this.bot.config.channels.gameLogs, {
         //     embeds: [
         //         this.bot.createEmbed()

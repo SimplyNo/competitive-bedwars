@@ -79,7 +79,8 @@ export class UserConfig {
         const memberRoles = new MemberRoles(member);
         if (verifiedUser) {
             // do nicknming
-            const nickname = `${verifiedUser.username}${verifiedUser.nick ? ` | ${verifiedUser.nick} ` : ' '}(${Util.nFormatter(verifiedUser.rbw.elo, 1)})`;
+            const elo = verifiedUser.showElo ? `(${Util.nFormatter(verifiedUser.rbw.elo, 1)})` : '';
+            const nickname = `${verifiedUser.username}${verifiedUser.nick ? ` | ${verifiedUser.nick} ` : ' '}${elo}`;
             if (member.nickname !== nickname) {
                 await member.setNickname(nickname).catch(e => this.bot.log(`&cCould not set nickname for ${member.user.tag}`));
             }

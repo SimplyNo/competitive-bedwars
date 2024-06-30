@@ -5,19 +5,38 @@ import { Util } from "../../util/Util";
 import { Party } from "../party/Party";
 import { Queue, queueGroup } from "./Queue";
 import { ranks, queueing_ranges } from "../../../../../score_sheet.json";
-const playersPerGame = 8;
-const countdownDuration = 1000;
+const playersPerGame = 2;
+const countdownDuration = 10000;
 
 export class MatchMaker {
     private log: (msg: string) => void;
     private queue: Queue;
-    private matchStartDelay: boolean = false;
+    private matchStartDelay: Collection<string, number> = new Collection();
     private channelCreationPromises: Collection<string, Promise<VoiceChannel | undefined>> = new Collection();
     private messageEditQueueTimes: Collection<string, number> = new Collection();
     public groupsInQueue: Collection<string, queueGroup & { queueStart: number }> = new Collection();
     constructor(private bot: Bot) {
         this.log = bot.initLogger('Match Making');
         this.queue = new Queue(bot);
+
+    }
+    private isValidMatch(parties: queueGroup[], maxPlayersPerTeam: number): boolean {
+        const totalPlayers = parties.reduce((sum, party) => sum + party.players.length, 0);
+        if (totalPlayers > maxPlayersPerTeam * 2) return false;
+
+        let team1 = 0;
+        let team2 = 0;
+
+        for (const party of parties) {
+            if (team1 <= team2 && team1 + party.players.length <= maxPlayersPerTeam) {
+                team1 += party.players.length;
+            } else if (team2 + party.players.length <= maxPlayersPerTeam) {
+                team2 += party.players.length;
+            } else {
+                return false;
+            }
+        }
+        return true;
     }
     async forceUpdateQueues() {
         const partyChannels = this.bot.getMainServerConfig().partyChannels;
@@ -183,12 +202,12 @@ ${party ? party.members.map(m => `<@${m.id}> ${!connectedMembers.has(m.id) ? !th
     }
     getEloRange(group: queueGroup & { queueStart: number }): [number, number] {
         if (group.highestElo >= 1500) {
-            return [1250, 10000];
+            return [1200, 10000];
         }
         const diff = Date.now() - group.queueStart;
-        // increase elo range by 100 every 5 minutes to cap of 500:
+        // increase elo range by 100 every 2.5 minutes to cap of 500:
 
-        const eloRange = Math.min(Math.floor(diff / 60000) * 20 + 150, 500);
+        const eloRange = Math.min(Math.floor(diff / 60000) * 40 + 300, 500);
         // const eloRange = Math.floor(diff / 1000) * 25 + 150;
         return [Math.max(group.highestElo - eloRange, 0), group.highestElo + eloRange]
     }
@@ -196,23 +215,34 @@ ${party ? party.members.map(m => `<@${m.id}> ${!connectedMembers.has(m.id) ? !th
         if (!this.bot.getMainServerConfig().isQueueOpen()) return;
         let games: queueGroup[][] = [];
         const allGroups = [...this.groupsInQueue.values()];
+
         // console.log(`------------------ start --------------------`)
         for (const group of allGroups) {
 
             const [minElo, maxElo] = this.getEloRange(group);
             const groupsInRange = this.getGroupsInRange(minElo, maxElo).filter(g => this.getGroupsInRange(...this.getEloRange(g)).find(e => e.leader.id === group.leader.id));
-            // console.log(`GROUPS FOUND (${groupsInRange.length}): (${minElo}-${maxElo})`, groupsInRange.map(p => `${p.leader.username} group: ${p.highestElo} | ${JSON.stringify(p.leader.ranked().getRankFromElo(p.highestElo))}`));
+            console.log(`GROUPS FOUND (${groupsInRange.length}): (${minElo}-${maxElo})`, groupsInRange.map(p => `${p.leader.username} group (${p.players.length}): ${p.highestElo} | ${JSON.stringify(p.leader.ranked().getRankFromElo(p.highestElo))}`));
             if (groupsInRange.map(e => e.players).flat().length >= playersPerGame) {
+
                 let tempGroups: queueGroup[] = [];
                 Util.shuffle(groupsInRange).forEach(g => {
                     const currentSize = tempGroups.map(e => e.players).flat().length;
                     const gSize = g.players.length;
-                    if (currentSize + gSize <= playersPerGame) {
+                    if (currentSize + gSize <= playersPerGame && this.isValidMatch([...tempGroups, g], playersPerGame / 2)) {
                         tempGroups.push(g);
                     }
                 })
                 if (tempGroups.map(e => e.players).flat().length >= playersPerGame) {
-                    games.push(tempGroups);
+                    const matchDelay = this.matchStartDelay.get(`${group.leader.id}`);
+                    if (matchDelay && matchDelay <= Date.now()) {
+                        games.push(tempGroups);
+                    } else if (!matchDelay) {
+                        this.matchStartDelay.set(`${group.leader.id}`, Date.now() + countdownDuration);
+                        setTimeout(() => {
+                            this.matchStartDelay.delete(`${group.leader.id}`);
+                            this.checkForMatch();
+                        }, countdownDuration);
+                    }
                 }
             }
         }
@@ -280,8 +310,10 @@ ${party ? party.members.map(m => `<@${m.id}> ${!connectedMembers.has(m.id) ? !th
 
     async startMatch(groups: queueGroup[], force = false) {
         console.log(`MATCH FOUND, PEOPLE IN QUEUE: ${this.queue.getQueue().length}`, `force=${force}`)
+
         if (!force && this.queue.getQueue().length < playersPerGame) {
             // if (this.matchStartMessages[queue]) this.matchStartMessages[queue]?.reply({ embeds: [this.bot.createErrorEmbed().setDescription(`Match cancelled. Not enough players.`)] });
+            console.log(`Not enough players to start a match.`);
             return null;
         }
         groups.forEach(player => player.players.forEach(p => this.remove(p)));

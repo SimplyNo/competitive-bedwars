@@ -45,6 +45,7 @@ export default class ForceScoreCommand extends SlashCommand {
         const gameID = interaction.options.get('gameid')?.value as number;
         const game = bot.rankedManager.getGameByID(gameID);
         if (!game) return interaction.respond([{ name: 'Invalid game ID', value: -1 }]);
+        if (game.players.some(p => !p)) return interaction.respond([{ name: `${game.players.filter(p => !p).map(p => `A player was not found in this game`)}`, value: -1 }]);
         const team1 = game.game?.team1.map(p => game.players.find(p1 => p1.id == p.id));
         const team2 = game.game?.team2.map(p => game.players.find(p1 => p1.id == p.id));
         if (!team1 || !team2) return interaction.respond([{ name: 'Teams not found!', value: -1 }]);
@@ -102,6 +103,7 @@ export default class ForceScoreCommand extends SlashCommand {
             bedBreaks: bedBreakers.map(b => ({ id: b.id }))
         }, true)
         const newStr = getGameString(game);
+        game.close();
         return interaction.reply({
             embeds: [
                 bot.createEmbed()

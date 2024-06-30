@@ -33,6 +33,7 @@ type rankedRecord = {
     streak: number;
     highestStreak: number;
     bedsBroken: number;
+    commends: number;
 };
 
 export class VerifiedConfig {
@@ -45,11 +46,13 @@ export class VerifiedConfig {
     rank?: string;
     rbw: rankedRecord;
     queueJoin?: boolean;
+    commendsToGive: number = 2;
+    showElo: boolean = true;
     constructor(private bot: Bot, options: Partial<VerifiedConfig>) {
 
         Object.assign(this, options);
         if (options.rbw) {
-            const { elo, gameHistory, highestStreak, losses, mvps, streak, voids, wins, bedsBroken } = options.rbw;
+            const { elo, gameHistory, highestStreak, losses, mvps, streak, voids, wins, bedsBroken, commends } = options.rbw;
             this.rbw = {
                 elo: elo ?? 0,
                 gameHistory: gameHistory ?? [],
@@ -59,7 +62,8 @@ export class VerifiedConfig {
                 mvps: mvps ?? 0,
                 streak: streak ?? 0,
                 highestStreak: highestStreak ?? 0,
-                bedsBroken: bedsBroken ?? 0
+                bedsBroken: bedsBroken ?? 0,
+                commends: commends ?? 0
             }
         }
     }

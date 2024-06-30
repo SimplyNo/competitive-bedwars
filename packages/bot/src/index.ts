@@ -47,7 +47,9 @@ bot.rest.on('rateLimited', (info) => {
 process.on('uncaughtException', err => {
     if (err.name === "ERR_IPC_CHANNEL_CLOSED") process.exit(1);
     console.error(`UNCAUGHT ERROR:`, err);
-    if (bot.config.env == 'dev') process.exit(1); // mandatory (as per the Node.js docs)
+    if (bot.config.env == 'dev') {
+        process.exit(1); // mandatory (as per the Node.js docs)
+    }
     // process.exit(1);
 });
 

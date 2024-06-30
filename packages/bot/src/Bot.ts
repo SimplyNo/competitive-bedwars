@@ -21,7 +21,7 @@ export const botUsers = new Enmap<string, RawUserConfig>({
 export const serverConfig = new Enmap<string, RawServerConfig>({
     name: "serverConfig"
 })
-export const verifiedUsers = new Enmap<string, RawVerifiedConfig>({
+export const verifiedUsers = new Enmap<string, Partial<RawVerifiedConfig> & { id: string }>({
     name: "verifiedUsers"
 })
 interface tempServerConfig {
@@ -97,7 +97,7 @@ export class Bot extends Client {
         botUsers.delete(id);
         this.verifiedUserInstances.delete(id);
     }
-    public getVerifiedUser(obj: { id?: any; username?: any; uuid?: any; nickname?: any }): (VerifiedConfig & { uuid: string }) | undefined {
+    public getVerifiedUser(obj: { id?: any; username?: any; uuid?: any; nickname?: any }, force?: boolean): (VerifiedConfig & { uuid: string }) | undefined {
         // print stack trace:
         obj = {
             id: obj.id || undefined,
@@ -106,18 +106,15 @@ export class Bot extends Client {
             nickname: obj.nickname || undefined
         }
         const isUser = Array.from(verifiedUsers).find(e => e[1].id === obj.id! || e[1].uuid === obj.uuid || e[1].username?.toLowerCase() === (obj?.username?.toLowerCase() || 0) || e[1].nick?.toLowerCase() === (obj?.nickname?.toLowerCase() || 0));
-        // console.log(`isUser:`, obj, isUser)
         if (isUser) {
             const user = isUser[1];
-            if (user.uuid) {
+            if (user.uuid || force) {
+                // this.log(`[${chalk.magenta.bold(`GetVerifiedUser`)}]`, obj, `UUID: ${user.uuid}`)
                 const instanced = this.verifiedUserInstances.get(user.id);
                 if (instanced) return instanced as (VerifiedConfig & { uuid: string });
                 // this.log(`&bInstancing user ${user.username}`);
                 this.verifiedUserInstances.set(user.id, new VerifiedConfig(this, user) as (VerifiedConfig & { uuid: string }));
                 return this.verifiedUserInstances.get(user.id) as (VerifiedConfig & { uuid: string });
-            } else {
-                // console.log(`refusing to return user:`, obj, isUser)
-
             }
         }
     }
@@ -138,6 +135,7 @@ export class Bot extends Client {
                 mvps: existingUser?.rbw?.mvps ?? 0,
                 streak: existingUser?.rbw?.streak ?? 0,
                 highestStreak: existingUser?.rbw?.highestStreak ?? 0,
+                commends: existingUser?.rbw?.commends ?? 0,
             }
         });
         this.verifiedUserInstances.set(id, new VerifiedConfig(this, verifiedUsers.get(id)!));

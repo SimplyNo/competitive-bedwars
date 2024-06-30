@@ -33,7 +33,8 @@ const normalizedNames: Partial<Record<validStats, string[]>> = {
     wlr: ["Win/Loss Ratio", "WLR"],
     games: ["Games Played", "Games Played"],
     bedsBroken: ['Beds Broken', 'Beds'],
-    elo: ["Rating", "Rating"]
+    elo: ["Rating", "Rating"],
+    commends: ["Commends", "Commends"]
 }
 export default class LeaderboardCommand extends Command {
     constructor() {
@@ -73,8 +74,9 @@ export default class LeaderboardCommand extends Command {
         else if (['wlr'].includes(type.toLowerCase())) type = 'wlr';
         else if (['bedbroken', 'bedsbroken', 'beds', 'bed'].includes(type.toLowerCase())) type = 'bedsBroken';
         else if (['elo', 'rating'].includes(type.toLowerCase())) type = 'elo';
+        else if (['commends', 'commend'].includes(type.toLowerCase())) type = 'commends';
         else if (['games'].includes(type.toLowerCase())) type = 'games';
-        else if (!member || member && args.length > 1) return bot.createErrorEmbed(message).setDescription(`Valid leaderboard stats: ${['beds', 'winstreak', 'mvps', 'wins', 'elo', 'games'].map(e => `\`${e}\``).join(', ')}`).send()
+        else if (!member || member && args.length > 1) return bot.createErrorEmbed(message).setDescription(`Valid leaderboard stats: ${['beds', 'winstreak', 'mvps', 'wins', 'elo', 'games', 'commends'].map(e => `\`${e}\``).join(', ')}`).send()
 
         else type = 'elo';
 

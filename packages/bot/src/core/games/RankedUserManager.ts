@@ -16,10 +16,14 @@ export class RankedUserManager {
         this.verifiedUser.set({ rbw: newRecord });
     }
     public _resetStats() {
-        this.verifiedUser.set({ rbw: { elo: 0, gameHistory: [], wins: 0, losses: 0, voids: 0, mvps: 0, streak: 0, highestStreak: 0, bedsBroken: 0 } });
+        this.verifiedUser.set({ rbw: { elo: 0, gameHistory: [], wins: 0, losses: 0, voids: 0, mvps: 0, streak: 0, highestStreak: 0, bedsBroken: 0, commends: 0 } });
     }
     public addElo(elo: number) {
         this.setElo(this.verifiedUser.rbw.elo + elo);
+    }
+    public addCommend() {
+        this.verifiedUser.rbw.commends++;
+        this.verifiedUser.set({ rbw: this.verifiedUser.rbw });
     }
     public setElo(elo: number) {
         this.bot.log(`&b[ELO CHANGE] [${this.verifiedUser.username}] &d${this.verifiedUser.rbw.elo} &7-> &d${elo}`)
