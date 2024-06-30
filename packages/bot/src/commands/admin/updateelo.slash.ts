@@ -7,10 +7,10 @@ import { AutoCompleteContext } from "../../types/command/AutoCompleteContext";
 import { verifiedUsers } from "../../Bot";
 import { VerifiedConfig } from "../../types/config/VerifiedConfig";
 
-export default class UpdateEloCommand extends SlashCommand {
+export default class UpdateCommand extends SlashCommand {
     constructor() {
         super({
-            name: "updateelo",
+            name: "update",
             adminOnly: true,
             slash: new SlashCommandBuilder()
                 .setName("updateelo")

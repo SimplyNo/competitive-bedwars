@@ -8,7 +8,7 @@ export default {
     once: false,
     async run(bot, message) {
         if (message.channel.type !== ChannelType.GuildText && message.channel.type !== ChannelType.GuildVoice) return;
-        if (!message.inGuild() || (message.guild?.id !== bot.mainGuild)) return;
+        if (!message.inGuild() || (message.guild?.id !== bot.mainGuild && message.guild?.id !== bot.staffGuild)) return;
         if (message.author.bot) return;
 
         const prefix: string = bot.config.prefix || "?";

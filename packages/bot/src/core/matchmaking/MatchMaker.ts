@@ -4,8 +4,7 @@ import { VerifiedConfig } from "../../types/config/VerifiedConfig";
 import { Util } from "../../util/Util";
 import { Party } from "../party/Party";
 import { Queue, queueGroup } from "./Queue";
-import { ranks, queueing_ranges } from "../../../../../score_sheet.json";
-const playersPerGame = 2;
+const playersPerGame = 8;
 const countdownDuration = 10000;
 
 export class MatchMaker {
@@ -162,7 +161,7 @@ export class MatchMaker {
                 content: `<@${leader.id}>`,
                 embeds: [
                     this.bot.createEmbed()
-                        .setDescription(`${isPartyFullyConnected ? `**Elapsed Time**: \`${Util.formatDuration(Date.now() - (queueGroup?.queueStart || 0))}\`\n` : ''}**Status**: \`${isPartyFullyConnected ? 'Active' : 'Waiting'}\`${queueGroup ? `\n**Current Search Range**: \`${queueGroup.highestElo >= 1500 ? '1500+' : this.getEloRange(queueGroup!).join('-')}\`` : ''}
+                        .setDescription(`${isPartyFullyConnected ? `**Elapsed Time**: \`${Util.formatDuration(Date.now() - (queueGroup?.queueStart || 0))}\`\n` : ''}**Status**: \`${isPartyFullyConnected ? 'Active' : 'Waiting'}\`${queueGroup ? `\n**Current Search Range**: \`${queueGroup.highestElo >= 1200 ? '1200+' : this.getEloRange(queueGroup!).join('-')}\`` : ''}
 **Connected**: \`${membersInQueue.length}/${party?.members.length || 1}\`
 ${party ? party.members.map(m => `<@${m.id}> ${!connectedMembers.has(m.id) ? !this.isInQueue(m) ? 'NOT CONNECTED' : `Connected with \`=j\`` : ''}`).join('\n') : connectedMembers.map(m => `<@${m.id}>`).join('\n')}`)
                 ]
@@ -201,8 +200,8 @@ ${party ? party.members.map(m => `<@${m.id}> ${!connectedMembers.has(m.id) ? !th
         this.checkForMatch();
     }
     getEloRange(group: queueGroup & { queueStart: number }): [number, number] {
-        if (group.highestElo >= 1500) {
-            return [1200, 10000];
+        if (group.highestElo >= 1200) {
+            return [1000, 10000];
         }
         const diff = Date.now() - group.queueStart;
         // increase elo range by 100 every 2.5 minutes to cap of 500:
