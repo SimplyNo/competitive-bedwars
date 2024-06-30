@@ -10,6 +10,7 @@ export class ModerationManager {
     constructor(private bot: Bot, public user: UserConfig) { }
     strike(mod: string, reason?: string) {
         this.user.set({ strikes: this.user.strikes.concat({ date: Date.now(), reason: reason || 'No reason specified', moderator: mod }) });
+        this.user.getVerified()?.ranked().addElo(-25);
         // this.logStrike((discorduser) => ({ title: `${discorduser.tag} was strikeed`, description: `<@${this.user.id}> (id: \`${this.user.id}\`) was strikeed by <@${mod}> (id: \`${mod}\`). \n\nReason: **${reason || 'No Reason Specified'}**\nThey now have **${this.user.strikes.length}** strikes.` }),)
         this.logStrike(mod, reason || 'No Reason Specified')
         this.check();
