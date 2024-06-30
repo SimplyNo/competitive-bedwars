@@ -11,7 +11,7 @@ export class MemberRoles {
         const roles = Array.isArray(rolesToAdd) ? rolesToAdd : [rolesToAdd];
         roles.forEach(role => {
             if (role && !this.memberRoles.has(role)) {
-                console.log(`ADD ROLE: ${role}`, this.memberRoles)
+                // console.log(`ADD ROLE: ${role}`, this.memberRoles)
                 this.memberRoles.add(role);
                 this.rolesToAdd.push({ id: role, reason: reason ?? "No reason provided" });
                 this.rolesToRemove = this.rolesToRemove.filter(e => e.id !== role);
@@ -22,7 +22,7 @@ export class MemberRoles {
         const roles = Array.isArray(rolesToRemove) ? rolesToRemove : [rolesToRemove];
         roles.forEach(role => {
             if (role && this.memberRoles.has(role)) {
-                console.log(`REMOVE ROLE: ${role}`)
+                // console.log(`REMOVE ROLE: ${role}`)
                 this.memberRoles.delete(role);
                 this.rolesToRemove.push({ id: role, reason: reason ?? "No reason provided" });
                 this.rolesToAdd = this.rolesToAdd.filter(e => e.id !== role);

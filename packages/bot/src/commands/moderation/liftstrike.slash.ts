@@ -38,7 +38,7 @@ export default class LiftStrikeCommand extends SlashCommand {
         const user = interaction.options.get("user")?.value as string;
         const userConfig = bot.getUser(user);
         const strikes = userConfig.strikes.map((w, id) => ({ ...w, id })).reverse().slice(0, 25);
-        interaction.respond(strikes.map((strike) => ({ name: `(${(bot.getUser(strike.moderator).username)}) ${truncate(strike.reason!, 80)}`, value: `${strike.id}` })))
+        interaction.respond(!strikes.length ? [{ name: 'This user has no strikes', value: '0' }] : strikes.map((strike) => ({ name: `(${(bot.getUser(strike.moderator).username)}) ${truncate(strike.reason!, 80)}`, value: `${strike.id}` })))
     }
     async run({ bot, interaction, serverConf, verifiedConfig: userConfig }: SlashCommandContext): Promise<void | Message<boolean> | InteractionResponse> {
         const user = interaction.options.get("user", true).user!;

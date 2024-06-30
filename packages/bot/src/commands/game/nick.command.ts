@@ -25,7 +25,7 @@ export default class NickCommand extends Command {
         verifiedConfig?.set({ nick });
         await verifiedConfig?.getUser().updateMember(true);
         return bot.createSuccessEmbed(message)
-            .setDescription(`Your nickname has been set to \`${nick}\`.\n\n`)
+            .setDescription(`Your nickname has been set to \`${nick}\`.\n\n**Please ensure that this is the username you will be playing as in-game.**`)
             .send()
     }
 }
