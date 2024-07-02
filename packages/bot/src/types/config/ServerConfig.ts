@@ -16,6 +16,7 @@ export class ServerConfig {
     ticketMessage?: { channelID: string, messageID: string };
     jailMessage?: { channelID: string, messageID: string };
     queueMessage?: { channelID: string, messageID: string };
+    autoRoleMessage?: { channelID: string, messageID: string };
     autoScoreStatusMessage?: { channelID: string, messageID: string };
     partyChannels: { [key: string]: { id: string, startTime: number | null, messageID: string | null } } = {};
     queueStatus: 'closed' | 'open' = 'open';

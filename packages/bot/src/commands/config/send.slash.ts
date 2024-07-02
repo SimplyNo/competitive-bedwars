@@ -6,6 +6,22 @@ import { Bot } from "../../Bot";
 import { RawServerConfig } from "../../types/config/ServerConfig";
 
 const messages: Partial<Record<keyof RawServerConfig, (bot: Bot) => MessageCreateOptions>> = {
+    autoRoleMessage: (bot) => ({
+        embeds: [
+            bot.createEmbed()
+                .setTitle(`Competitive Bedwars | Self Roles`)
+                .setDescription(bot.config.autoRoles.map(role => `<@&${role.role}> : ${role.desc}`).join('\n'))
+        ],
+        components: [
+            new ActionRowBuilder<ButtonBuilder>()
+                .addComponents(bot.config.autoRoles.map(role => (
+                    new ButtonBuilder()
+                        .setLabel(`${role.name}`)
+                        .setStyle(ButtonStyle.Primary)
+                        .setCustomId(`autorole-${role.role}`)
+                )))
+        ]
+    }),
     queueMessage: (bot) => ({
         embeds: [bot.createEmbed().setDescription(`Fetching queue status...`)]
     }),
