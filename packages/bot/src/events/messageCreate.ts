@@ -25,6 +25,7 @@ export default {
         if (!command) return;
 
         // verification channel
+        if (bot.config.channels.ignoreCommands.includes(message.channel.id) && !message.member?.roles.cache.has(bot.config.roles.staff)) return message.reply(`Commands can not be used in this channel.`);
 
         const { cooldown } = command;
         if (cooldown) {
