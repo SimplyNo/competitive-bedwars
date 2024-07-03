@@ -13,8 +13,8 @@ export default class PugsCommand extends Command {
         if (!allMembers) return bot.createErrorEmbed(message).setDescription(`Failed to get pugs.`).send();
         const pugs = allMembers.filter(m => m.roles.cache.has(bot.config.roles.pugs));
         bot.createEmbed(message)
-            .setTitle(`PUGS List (${pugs.size})`)
-            .setDescription(pugs.map(p => (`<@${p.id}>`)).join(' • '))
+            .setTitle(`PUGs List (${pugs.size})`)
+            .setDescription(pugs.map(p => (`<@${p.id}>`)).join(' • ') || "There are no PUGs currently.")
             .send()
     }
 }
