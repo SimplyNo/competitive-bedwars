@@ -1,4 +1,4 @@
-import { APIApplicationCommandAutocompleteResponse, AutocompleteInteraction, InteractionResponse, Message, PermissionFlagsBits, SlashCommandBuilder, SlashCommandOptionsOnlyBuilder } from "discord.js";
+import { APIApplicationCommandAutocompleteResponse, AutocompleteInteraction, InteractionResponse, Message, PermissionFlagsBits, SlashCommandBuilder, SlashCommandOptionsOnlyBuilder, SlashCommandSubcommandsOnlyBuilder } from "discord.js";
 import Embed from "../../util/Embed";
 import { CommandContext } from "./CommandContext";
 import { CommandOptions, CommandType, SlashCommandOptions } from "./CommandOptions";
@@ -7,7 +7,7 @@ import { SlashCommandContext } from "./SlashCommandContext";
 import { AutoCompleteContext } from "./AutoCompleteContext";
 
 export class SlashCommand {
-    public slash: SlashCommandOptionsOnlyBuilder;
+    public slash: SlashCommandOptionsOnlyBuilder | SlashCommandSubcommandsOnlyBuilder;
     public name: string;
     public type?: CommandType;
     public usage?: string;

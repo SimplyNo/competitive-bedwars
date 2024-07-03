@@ -1,11 +1,11 @@
-import { SlashCommandBuilder, SlashCommandOptionsOnlyBuilder } from "discord.js"
+import { SlashCommandBuilder, SlashCommandOptionsOnlyBuilder, SlashCommandSubcommandsOnlyBuilder } from "discord.js"
 
 export type EconomyCooldown = {
     cooldown: number,
     error: string
 }
 export interface SlashCommandOptions extends Omit<CommandOptions, "description"> {
-    slash: SlashCommandOptionsOnlyBuilder
+    slash: SlashCommandOptionsOnlyBuilder | SlashCommandSubcommandsOnlyBuilder
 }
 export interface CommandOptions {
     name: string,

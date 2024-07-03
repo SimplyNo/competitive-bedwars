@@ -30,6 +30,7 @@ export class Bot extends Client {
     public __verifiedUsers = verifiedUsers;
     private verifiedUserInstances = new Collection<string, VerifiedConfig>();
     private serverConfigInstances = new Collection<string, ServerConfig>();
+    private userConfigInstances = new Collection<string, UserConfig>();
     public commands: Collection<string, Command> = new Collection();
     public slashCommands: Collection<string, SlashCommand> = new Collection();
     public intervals: Collection<string, Interval> = new Collection();
@@ -87,7 +88,12 @@ export class Bot extends Client {
         return botUsers.array();
     }
     public getUser(id: string) {
-        return new UserConfig(this, botUsers.get(id) || { id });
+        const instanced = this.userConfigInstances.get(id);
+        if (instanced) return instanced;
+        this.log(`Instancing user ${id}`);
+        const newInstance = new UserConfig(this, botUsers.get(id) || { id });
+        this.userConfigInstances.set(id, newInstance);
+        return newInstance;
     }
     /**
  * should never use this outside of eval.
@@ -95,7 +101,7 @@ export class Bot extends Client {
  * */
     public removeUser(id: string) {
         botUsers.delete(id);
-        this.verifiedUserInstances.delete(id);
+        this.userConfigInstances.delete(id);
     }
     public getVerifiedUser(obj: { id?: any; username?: any; uuid?: any; nickname?: any }, force?: boolean): (VerifiedConfig & { uuid: string }) | undefined {
         // print stack trace:

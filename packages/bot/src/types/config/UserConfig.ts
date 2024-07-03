@@ -20,6 +20,9 @@ export class UserConfig {
     rankBan?: ban;
     rolesToReturn?: string[];
     ignoreList?: string[] = [];
+    pugUpvotes?: number;
+    pugDownvotes?: number;
+    pugVotes?: Record<string, 'upvote' | 'downvote'>;
     constructor(private bot: Bot, options: Partial<UserConfig>) {
         Object.assign(this, options);
         this.username = this.bot.users.cache.get(this.id)?.username ?? this.username;

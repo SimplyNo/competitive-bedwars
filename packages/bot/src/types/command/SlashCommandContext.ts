@@ -1,4 +1,4 @@
-import { Client, CommandInteraction, Message } from "discord.js";
+import { ChatInputCommandInteraction, Client, CommandInteraction, Message } from "discord.js";
 import { Bot, botUsers } from "../../Bot";
 import { UserConfig } from "../config/UserConfig";
 import { Command } from "./Command";
@@ -10,7 +10,7 @@ export class SlashCommandContext {
     public serverConf: ServerConfig;
     public verifiedConfig?: VerifiedConfig & { uuid: string };
     public userConfig: UserConfig;
-    constructor(public bot: Bot, public interaction: CommandInteraction<'cached'>) {
+    constructor(public bot: Bot, public interaction: ChatInputCommandInteraction<'cached'>) {
         this.serverConf = bot.getServerConfig(interaction.guild.id);
         this.verifiedConfig = bot.getVerifiedUser({ id: interaction.user.id });
         let botuser = bot.getUser(interaction.user.id);
