@@ -1,7 +1,5 @@
 import { Collection, Message } from "discord.js"
 import { Command, CommandContext } from "../../types"
-import { cpuUsage, } from "os-utils";
-import { Util } from "../../util/Util";
 const voided = new Collection<number, string>();
 export default class QueueStatsCommand extends Command {
     constructor() {
@@ -14,7 +12,20 @@ export default class QueueStatsCommand extends Command {
     async run({ bot, args, message, prefix, serverConf, verifiedConfig: userConfig }: CommandContext): Promise<void | Message<boolean>> {
         const game = bot.rankedManager.getGameByTextChannel(message.channel.id);
         if (!game) return bot.createErrorEmbed(message).setDescription(`You must be in a game channel to use this command.`).send();
-
+        const team1 = game.getTeamPlayers('team1');
+        const team2 = game.getTeamPlayers('team2');
+        bot.createEmbed(message)
+            .setAuthor({ name: `Game #${game.id} Stats` })
+            .addFields([
+                {
+                    name: 'Team 1',
+                    value: team1.map(p => `• <@${p.id}> | ${p.ranked().getStat('wlr')} WL, ${p.ranked().getStat('mvp_percent')}% MVP, ${p.ranked().getStat('beds_percent')}% BEDS, ${p.ranked().getStat('streak')} WS`).join('\n') || 'No players found.'
+                },
+                {
+                    name: 'Team 2',
+                    value: team2.map(p => `• <@${p.id}> | ${p.ranked().getStat('wlr')} WL, ${p.ranked().getStat('mvp_percent')}% MVP, ${p.ranked().getStat('beds_percent')}% BEDS, ${p.ranked().getStat('streak')} WS`).join('\n') || 'No players found.'
+                }
+            ]).send()
 
     }
 }

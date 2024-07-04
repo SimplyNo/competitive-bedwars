@@ -1,13 +1,6 @@
 import { Message } from "discord.js"
 import { Command, CommandContext } from "../../types"
 import { cpuUsage, } from "os-utils";
-function getCpuUsage(): Promise<Number> {
-    return new Promise((resolve) => {
-        cpuUsage(function (v) {
-            resolve(v * 100);
-        });
-    });
-}
 export default class PingCommand extends Command {
     constructor() {
         super({
@@ -24,7 +17,6 @@ export default class PingCommand extends Command {
 
         let memory = process.memoryUsage().heapUsed / 1024 / 1024;
         let allUsers = bot.getAllVerifiedUsers().length;
-        let cpu = await getCpuUsage();
         pingMsg.edit({
             content: '',
             embeds: [
@@ -50,22 +42,12 @@ export default class PingCommand extends Command {
                         inline: true
                     },
                     {
-                        name: 'Memory Usage',
-                        value: `:dna: \`${memory.toFixed(1)} MB\``,
-                        inline: true
-                    },
-                    {
-                        name: 'CPU Usage',
-                        value: `:desktop: \`${cpu.toFixed(2)}%\``,
-                        inline: true
-                    },
-                    {
                         name: 'Total Members',
                         value: `:busts_in_silhouette: \`${realMembers}\``,
                         inline: true
                     },
                     {
-                        name: 'Verified Users',
+                        name: 'Registered Users',
                         value: `:white_check_mark: \`${allUsers}\``,
                         inline: true
                     }

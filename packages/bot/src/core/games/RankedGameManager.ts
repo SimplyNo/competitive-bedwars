@@ -10,7 +10,7 @@ export const rbwGames = new Enmap<string, RawRankedGame>({
     name: 'games'
 });
 
-export type validStats = 'wins' | 'losses' | 'mvps' | 'streak' | 'wlr' | 'games' | 'bedsBroken' | 'elo' | 'commends';
+export type validStats = 'wins' | 'losses' | 'mvps' | 'streak' | 'wlr' | 'games' | 'bedsBroken' | 'elo' | 'commends' | 'mvp_percent' | 'beds_percent';
 export class RankedGameManager {
     private gameInstances = new Collection<string, RankedGame>();
     private games = rbwGames;
