@@ -41,7 +41,7 @@ export default {
                 embeds: [getPugsEmbed(bot, user)],
             })
         } else if (action === 'endvote') {
-            if (interaction.member.roles.cache.has(bot.config.roles.pugsmanager)) {
+            if (interaction.member.roles.cache.has(bot.config.roles.pugsManager)) {
                 interaction.reply({ content: `Vote Ended!`, ephemeral: true });
                 const { pugUpvotes, pugDownvotes } = user;
                 interaction.message.edit(
@@ -62,7 +62,7 @@ export default {
                     })
             } else {
                 interaction.reply({
-                    content: `You need <@&${bot.config.roles.pugsmanager}> role to do this.`,
+                    content: `You need <@&${bot.config.roles.pugsManager}> role to do this.`,
                     ephemeral: true
                 })
             }
