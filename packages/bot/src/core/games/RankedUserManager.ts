@@ -34,8 +34,8 @@ export class RankedUserManager {
     public getStat(stat: validStats) {
         if (stat === 'wlr') return this.verifiedUser.rbw.wins / this.verifiedUser.rbw.losses;
         if (stat === 'games') return this.verifiedUser.rbw.gameHistory.length;
-        if (stat === 'beds_percent') return this.verifiedUser.rbw.bedsBroken / this.verifiedUser.rbw.gameHistory.length;
-        if (stat === 'mvp_percent') return this.verifiedUser.rbw.mvps / this.verifiedUser.rbw.gameHistory.length;
+        if (stat === 'beds_percent') return this.verifiedUser.rbw.bedsBroken / this.verifiedUser.rbw.gameHistory.length * 100;
+        if (stat === 'mvp_percent') return this.verifiedUser.rbw.mvps / this.verifiedUser.rbw.gameHistory.length * 100;
         return this.verifiedUser.rbw[stat];
     }
     public getRankFromElo(elo = this.verifiedUser.rbw.elo) {

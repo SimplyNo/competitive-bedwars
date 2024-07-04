@@ -15,17 +15,9 @@ export default class QueueStatsCommand extends Command {
         const team1 = game.getTeamPlayers('team1');
         const team2 = game.getTeamPlayers('team2');
         bot.createEmbed(message)
-            .setAuthor({ name: `Game #${game.id} Stats` })
-            .addFields([
-                {
-                    name: 'Team 1',
-                    value: team1.map(p => `• <@${p.id}> | ${p.ranked().getStat('wlr')} WL, ${p.ranked().getStat('mvp_percent')}% MVP, ${p.ranked().getStat('beds_percent')}% BEDS, ${p.ranked().getStat('streak')} WS`).join('\n') || 'No players found.'
-                },
-                {
-                    name: 'Team 2',
-                    value: team2.map(p => `• <@${p.id}> | ${p.ranked().getStat('wlr')} WL, ${p.ranked().getStat('mvp_percent')}% MVP, ${p.ranked().getStat('beds_percent')}% BEDS, ${p.ranked().getStat('streak')} WS`).join('\n') || 'No players found.'
-                }
-            ]).send()
+            .setAuthor({ name: `Game #${game.id} Player Stats` })
+            .setDescription(game.players.map(p => `• <@${p.id}> | ${p.ranked().getStat('wlr')} WL, ${p.ranked().getStat('mvp_percent')}% MVP, ${p.ranked().getStat('beds_percent')}% BED, ${p.ranked().getStat('streak')} WS`).join('\n') || 'No players found.')
+            .send()
 
     }
 }

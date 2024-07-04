@@ -4,7 +4,7 @@ import { VerifiedConfig } from "../../types/config/VerifiedConfig";
 import { Util } from "../../util/Util";
 import { Party } from "../party/Party";
 import { Queue, queueGroup } from "./Queue";
-const playersPerGame = 8;
+const playersPerGame = 2;
 const countdownDuration = 10000;
 
 export class MatchMaker {

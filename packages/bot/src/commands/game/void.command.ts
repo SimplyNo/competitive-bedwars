@@ -32,8 +32,7 @@ export default class VoidCommand extends Command {
         })
         collector.on('collect', async (reaction, user) => {
             console.log(reaction.emoji.toString(), reaction.count)
-            // if (reaction.emoji.toString() === '✅' && reaction.count >= 6) {
-            if (reaction.emoji.toString() === '✅' && reaction.count >= 3) {
+            if (reaction.emoji.toString() === '✅' && reaction.count >= 6) {
                 // end game
                 await voidVote.reply({
                     embeds: [
