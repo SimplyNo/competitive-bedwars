@@ -4,7 +4,7 @@ import { VerifiedConfig } from "../../types/config/VerifiedConfig";
 import { Util } from "../../util/Util";
 import { Party } from "../party/Party";
 import { Queue, queueGroup } from "./Queue";
-const playersPerGame = 4;
+const playersPerGame = 8;
 const countdownDuration = 10000;
 
 export class MatchMaker {
@@ -326,8 +326,8 @@ ${party ? party.members.map(m => `<@${m.id}> ${!connectedMembers.has(m.id) ? !th
     remove(player: VerifiedConfig) {
         this.queue.remove(player);
         const leaderID = player.getUser().getParty()?.leader.id || player.id;
-        this.refreshQueueGroup(player);
         this.groupsInQueue.delete(leaderID);
+        this.refreshQueueGroup(player);
         player.set({ queueJoin: false });
         // this.updateQueueMessage(player);
     }

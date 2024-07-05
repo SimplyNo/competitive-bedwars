@@ -13,7 +13,9 @@ export default class CallRemoveComamnd extends Command {
         })
     }
     async run({ bot, args, message, prefix, serverConf, verifiedConfig }: CommandContext): Promise<void | Message<boolean>> {
-        const game = bot.rankedManager.getGameByTextChannel(message.channel.id);
+        const gameFromChannel = bot.rankedManager.getGameByTextChannel(message.channel.id);
+        const game = bot.rankedManager.getGameByMember(message.author.id);
+        if (gameFromChannel && !game) return bot.createErrorEmbed(message).setDescription(`You cannot remove users from this call.`).send();
         if (!game) return bot.createErrorEmbed(message).setDescription(`You must be in a game channel to use this command.`).send();
         const user = await bot.parseMember(args[0], message.guild);
         if (!user) return bot.createErrorEmbed(message).setDescription(`Provide a valid member to remove from the game call.`).send();

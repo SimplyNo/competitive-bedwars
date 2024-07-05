@@ -2,7 +2,7 @@ import Enmap from "enmap";
 import { RankedGame, RawRankedGame, teamPlayer } from "./RankedGame";
 import { Bot } from "../../Bot";
 import { RawVerifiedConfig, VerifiedConfig } from "../../types/config/VerifiedConfig";
-import { ChannelType, Collection, Message, MessageFlags, PermissionFlagsBits, TextChannel } from "discord.js";
+import { AttachmentBuilder, ChannelType, Collection, Message, MessageFlags, PermissionFlagsBits, TextChannel } from "discord.js";
 import { Util } from "../../util/Util";
 import { Party } from "../party/Party";
 
@@ -100,6 +100,11 @@ export class RankedGameManager {
         })
         await textChannel.send(`Game has started. Use \`=score [replay]\` to score the game.`)
 
+        await textChannel.send({
+            files: [
+                new AttachmentBuilder('../../assets/rules.png')
+            ]
+        })
     }
     private async createBalancedTeams(groups: { players: VerifiedConfig[] }[]) {
         let team1: VerifiedConfig[] = [];
@@ -110,9 +115,9 @@ export class RankedGameManager {
             const team1Elo = team1.reduce((prev, curr) => prev + curr.rbw.elo, 0);
             const team2Elo = team2.reduce((prev, curr) => prev + curr.rbw.elo, 0);
             console.log(`assigning team:`, players.map(p => p.username));
-            if (team1Elo <= team2Elo && team1.length < 2) {
+            if (team1Elo <= team2Elo && team1.length < 4) {
                 team1.push(...players);
-            } else if (team2.length < 2) {
+            } else if (team2.length < 4) {
                 team2.push(...players);
             } else {
                 team1.push(...players);
@@ -156,14 +161,14 @@ export class RankedGameManager {
             type: ChannelType.GuildVoice,
             parent: this.bot.config.channels.gamesCategory,
             permissionOverwrites: permissionOverwritesVoice,
-            userLimit: 2
+            userLimit: 4
         });
         const voiceChannelTeam2 = await this.bot.api.workers.createChannel({
             name: `#${id} Team 2`,
             type: ChannelType.GuildVoice,
             parent: this.bot.config.channels.gamesCategory,
             permissionOverwrites: permissionOverwritesVoice,
-            userLimit: 2
+            userLimit: 4
         });
         return { textChannel, voiceChannelTeam1, voiceChannelTeam2 };
     }

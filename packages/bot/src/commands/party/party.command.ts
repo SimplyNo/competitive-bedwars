@@ -157,7 +157,7 @@ export default class PartyCommand extends Command {
 `)
             .addFields([
                 {
-                    name: `Members (${party.members.length}/4)`,
+                    name: `Members (${party.members.length}/2)`,
                     value: `${party.members.map(m => `• <@${m.id}> ${party.leader.id === m.id ? 'Leader' : ''}`).join('\n')}`
                 }
             ]).send()

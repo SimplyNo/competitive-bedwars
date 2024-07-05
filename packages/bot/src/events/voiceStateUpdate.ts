@@ -21,12 +21,12 @@ export default {
                 if (newState.channelId) {
                     const teamChannel = <VoiceChannel>await bot.parseChannel(currentGame.game?.team2.find(p => p.id == verifiedUser.id) ? currentGame.game?.team2Voice : currentGame.voiceChannel, bot.getMainGuild()!);
                     const member = await verifiedUser.getUser().resolveMember();
-                    // if (teamChannel) member?.voice.setChannel(teamChannel).catch(async e => { })
-                    if (teamChannel && member) bot.api.workers.moveMember(member.id, teamChannel.id).catch(async e => { })
+
+                    // if (teamChannel && member) bot.api.workers.moveMember(member.id, teamChannel.id).catch(async e => { })
                 } else {
                     // check if channels no longer exist:
                     await currentGame.checkIfGameExists();
-                    if (currentGame.active) {
+                    if (currentGame.active && (currentGame.created + 180000) > Date.now()) {
                         bot.log(`&e[QUEUES] &c${verifiedUser.username} has left the game.`);
 
                         const voidTime = Date.now() + 30000;

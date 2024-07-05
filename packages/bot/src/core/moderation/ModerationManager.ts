@@ -190,6 +190,8 @@ export class ModerationManager {
     }
     liftStrike(mod: string, strikeID: number, reason?: string) {
         let strike = this.user.strikes.splice(strikeID, 1);
+        // add back 25
+        // this.user.getVerified()?.ranked().addElo(25);
         // this.logStrike((discorduser) => ({ title: `${discorduser.tag} was pardoned.`, description: `<@${this.user.id}> (id: \`${this.user.id}\`) was pardoned by <@${mod}> (id: \`${mod}\`) of a strike. \n\nReason: **${reason || 'No Reason Specified'}**` }))
         this.logStrike(mod, reason || 'No Reason Specified', strike[0])
         this.user.set({ strikes: this.user.strikes });
