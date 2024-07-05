@@ -4,7 +4,7 @@ import { VerifiedConfig } from "../../types/config/VerifiedConfig";
 import { Util } from "../../util/Util";
 import { Party } from "../party/Party";
 import { Queue, queueGroup } from "./Queue";
-const playersPerGame = 8;
+const playersPerGame = 4;
 const countdownDuration = 10000;
 
 export class MatchMaker {
@@ -17,6 +17,38 @@ export class MatchMaker {
     constructor(private bot: Bot) {
         this.log = bot.initLogger('Match Making');
         this.queue = new Queue(bot);
+        // this.groupsInQueue.set('a', {
+        //     leader: bot.getVerifiedUser({ username: 'simplyno' })!,
+        //     highestElo: 0,
+        //     players: [
+        //         bot.getVerifiedUser({ username: 'simplyno' })!,
+        //     ],
+        //     queueStart: Date.now()
+        // })
+        // this.groupsInQueue.set('c', {
+        //     leader: bot.getVerifiedUser({ username: 'aestheticallysad' })!,
+        //     highestElo: 0,
+        //     players: [
+        //         bot.getVerifiedUser({ username: 'aestheticallysad' })!,
+        //     ],
+        //     queueStart: Date.now()
+        // });
+        // this.groupsInQueue.set('e', {
+        //     leader: bot.getVerifiedUser({ username: 'u9d' })!,
+        //     highestElo: 0,
+        //     players: [
+        //         bot.getVerifiedUser({ username: 'u9d' })!,
+        //     ],
+        //     queueStart: Date.now()
+        // })
+        // this.groupsInQueue.set('d', {
+        //     leader: bot.getVerifiedUser({ username: 'stseid' })!,
+        //     highestElo: 0,
+        //     players: [
+        //         bot.getVerifiedUser({ username: 'stseid' })!,
+        //     ],
+        //     queueStart: Date.now()
+        // })
 
     }
     private isValidMatch(parties: queueGroup[], maxPlayersPerTeam: number): boolean {
@@ -97,7 +129,7 @@ export class MatchMaker {
                 })) as [] || []),
                 {
                     id: this.bot.getMainGuild()?.roles.everyone.id!,
-                    deny: [PermissionFlagsBits.Connect, PermissionFlagsBits.ViewChannel]
+                    deny: [PermissionFlagsBits.Connect]
                 }
             ];
             // create new party channel
@@ -233,15 +265,15 @@ ${party ? party.members.map(m => `<@${m.id}> ${!connectedMembers.has(m.id) ? !th
                 })
                 if (tempGroups.map(e => e.players).flat().length >= playersPerGame) {
                     const matchDelay = this.matchStartDelay.get(`${group.leader.id}`);
-                    if (matchDelay && matchDelay <= Date.now()) {
-                        games.push(tempGroups);
-                    } else if (!matchDelay) {
-                        this.matchStartDelay.set(`${group.leader.id}`, Date.now() + countdownDuration);
-                        setTimeout(() => {
-                            this.matchStartDelay.delete(`${group.leader.id}`);
-                            this.checkForMatch();
-                        }, countdownDuration);
-                    }
+                    games.push(tempGroups);
+                    // if (matchDelay && matchDelay <= Date.now()) {
+                    // } else if (!matchDelay) {
+                    //     this.matchStartDelay.set(`${group.leader.id}`, Date.now() + countdownDuration);
+                    //     setTimeout(() => {
+                    //         this.matchStartDelay.delete(`${group.leader.id}`);
+                    //         this.checkForMatch();
+                    //     }, countdownDuration);
+                    // }
                 }
             }
         }
@@ -315,6 +347,7 @@ ${party ? party.members.map(m => `<@${m.id}> ${!connectedMembers.has(m.id) ? !th
             console.log(`Not enough players to start a match.`);
             return null;
         }
+
         groups.forEach(player => player.players.forEach(p => this.remove(p)));
 
         // this.bot.log('players:', players);

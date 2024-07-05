@@ -104,14 +104,18 @@ export class RankedGameManager {
     private async createBalancedTeams(groups: { players: VerifiedConfig[] }[]) {
         let team1: VerifiedConfig[] = [];
         let team2: VerifiedConfig[] = [];
-        let avgEloGroups = Util.shuffle(groups).map(g => ({ players: g.players, avgElo: g.players.reduce((prev, curr) => prev + curr.rbw.elo, 0) / g.players.length }))
-        for (const { players, avgElo } of avgEloGroups.sort((a, b) => b.avgElo - a.avgElo)) {
+        let avgEloGroups = Util.shuffle(groups).map(g => ({ players: g.players, avgElo: g.players.reduce((prev, curr) => prev + curr.rbw.elo, 0) / g.players.length })).sort((a, b) => b.avgElo - a.avgElo).sort((a, b) => b.players.length - a.players.length);
+        // for (const { players, avgElo } of avgEloGroups.sort((a, b) => b.avgElo - a.avgElo)) {
+        for (const { players, avgElo } of avgEloGroups) {
             const team1Elo = team1.reduce((prev, curr) => prev + curr.rbw.elo, 0);
             const team2Elo = team2.reduce((prev, curr) => prev + curr.rbw.elo, 0);
-            if (team1Elo <= team2Elo && team1.length < 4) {
+            console.log(`assigning team:`, players.map(p => p.username));
+            if (team1Elo <= team2Elo && team1.length < 2) {
                 team1.push(...players);
-            } else {
+            } else if (team2.length < 2) {
                 team2.push(...players);
+            } else {
+                team1.push(...players);
             }
         }
         console.log(`groups:`, avgEloGroups);
@@ -152,14 +156,14 @@ export class RankedGameManager {
             type: ChannelType.GuildVoice,
             parent: this.bot.config.channels.gamesCategory,
             permissionOverwrites: permissionOverwritesVoice,
-            userLimit: 4
+            userLimit: 2
         });
         const voiceChannelTeam2 = await this.bot.api.workers.createChannel({
             name: `#${id} Team 2`,
             type: ChannelType.GuildVoice,
             parent: this.bot.config.channels.gamesCategory,
             permissionOverwrites: permissionOverwritesVoice,
-            userLimit: 4
+            userLimit: 2
         });
         return { textChannel, voiceChannelTeam1, voiceChannelTeam2 };
     }

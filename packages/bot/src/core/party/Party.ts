@@ -167,7 +167,7 @@ export class Party {
         this._update();
     }
     public isFull() {
-        return this.members.length >= 4;
+        return this.members.length >= 2;
     }
     public isEmpty() {
         return this.members.length === 0;
