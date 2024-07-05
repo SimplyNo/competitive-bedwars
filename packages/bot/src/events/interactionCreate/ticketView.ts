@@ -33,7 +33,8 @@ export default {
             ]
         }).catch(e => console.error(`error while loading ticket transcript #${ticket.id}`, e))
         if (!existingTimeouts.has(interaction.message.id)) existingTimeouts.set(interaction.message.id, setTimeout(() => {
-            message.edit({
+            console.log(`[DELETING]`, interaction.message.id)
+            interaction.message.edit({
                 components: [
                     new ActionRowBuilder<ButtonBuilder>().addComponents(
                         new ButtonBuilder(interaction.message.components[0].components[0].toJSON() as APIButtonComponent),

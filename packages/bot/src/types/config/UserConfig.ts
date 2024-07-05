@@ -3,6 +3,8 @@ import { Bot, botUsers } from "../../Bot";
 import { MemberRoles } from "../../util/MemberRoles";
 import { ModerationManager, ban, mute, strike } from "../../core/moderation/ModerationManager";
 import { Util } from "../../util/Util";
+import { ranks } from "../../../../../score_sheet.json";
+
 const memberUpdateCache = new Collection<string, { expire: number }>();
 type NonFunctionProperties<T> = {
     [K in keyof T]: T[K] extends Function ? never : K
@@ -89,7 +91,11 @@ export class UserConfig {
             }
             // add register role
             memberRoles.addRole(this.bot.config.roles.registered);
-            // add rank role
+            // remove all rank roles:
+            ranks.forEach(r => {
+                memberRoles.removeRole(r.role);
+            })
+            // add rank role:
             memberRoles.addRole(verifiedUser.ranked().getRankFromElo().role);
         } else {
             await member.setNickname(null).catch(e => this.bot.log(`&cCould not remove nickname for ${member.user.tag}`));

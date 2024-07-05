@@ -13,7 +13,7 @@ export default class UpdateCommand extends SlashCommand {
             name: "update",
             adminOnly: true,
             slash: new SlashCommandBuilder()
-                .setName("updateelo")
+                .setName("update")
                 .setDescription("updates the picked users elo to whatever you put it as")
                 .addUserOption(subcmd =>
                     subcmd
