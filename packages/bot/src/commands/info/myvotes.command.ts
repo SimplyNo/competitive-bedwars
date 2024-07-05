@@ -6,7 +6,9 @@ export default class MyVotesCommand extends Command {
         super({
             name: 'myvotes',
             aliases: ['myvote'],
-            description: 'View someone\'s pugs votes.'
+            description: 'View someone\'s pugs votes.',
+            usage: '<player?>',
+            type: 'info'
         })
     }
     async run({ bot, args, message, prefix, serverConf, verifiedConfig }: CommandContext): Promise<void | Message<boolean>> {

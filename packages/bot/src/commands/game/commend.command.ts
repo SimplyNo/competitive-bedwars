@@ -6,7 +6,9 @@ export default class CommendCommand extends Command {
     constructor() {
         super({
             name: 'commend',
-            description: 'Commend a player.'
+            description: 'Commend a player.',
+            usage: '<player>',
+            type: 'game'
         })
     }
     async run({ bot, args, message, prefix, serverConf, verifiedConfig }: CommandContext): Promise<void | Message<boolean>> {

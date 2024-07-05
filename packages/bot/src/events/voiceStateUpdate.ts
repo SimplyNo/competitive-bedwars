@@ -29,7 +29,7 @@ export default {
                     if (currentGame.active) {
                         bot.log(`&e[QUEUES] &c${verifiedUser.username} has left the game.`);
 
-                        const voidTime = Date.now() + 10000;
+                        const voidTime = Date.now() + 30000;
                         const message = await bot.logger.log(currentGame.textChannel, {
                             content: `<@${verifiedUser.id}> has left the game.`,
                             embeds: [
@@ -62,7 +62,7 @@ Do not leave the game, otherwise, you will be issued a strike. Wait for the play
                                     gameChannelLeavesTimeout.delete(verifiedUser.id);
                                     currentGame.void(`${verifiedUser.username} left the game.`);
                                 }
-                            }, 10000), message
+                            }, 30000), message
                         })
                     }
                 }

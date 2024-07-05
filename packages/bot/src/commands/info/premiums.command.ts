@@ -6,7 +6,8 @@ export default class PremiumsCommand extends Command {
         super({
             name: 'premiums',
             aliases: ['premium', 'prem', 'prems'],
-            description: 'View current Premiums.'
+            description: 'View current Premiums.',
+            type: 'info'
         })
     }
     async run({ bot, args, message, prefix, serverConf, verifiedConfig }: CommandContext): Promise<void | Message<boolean>> {

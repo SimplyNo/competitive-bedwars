@@ -7,6 +7,7 @@ export default class QueueStatsCommand extends Command {
             name: 'queuestats',
             aliases: ['qs', 'q'],
             description: 'See stats of players in the queue.',
+            type: 'game'
         })
     }
     async run({ bot, args, message, prefix, serverConf, verifiedConfig: userConfig }: CommandContext): Promise<void | Message<boolean>> {

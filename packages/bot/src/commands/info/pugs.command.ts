@@ -5,7 +5,8 @@ export default class PugsCommand extends Command {
     constructor() {
         super({
             name: 'pugs',
-            description: 'View current PUGS.'
+            description: 'View current PUGS.',
+            type: 'info'
         })
     }
     async run({ bot, args, message, prefix, serverConf, verifiedConfig }: CommandContext): Promise<void | Message<boolean>> {

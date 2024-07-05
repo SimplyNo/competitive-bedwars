@@ -8,7 +8,7 @@ export default class StrikeRequestCommand extends Command {
             name: 'strikerequest',
             aliases: ['sr'],
             description: 'Request strike of player',
-            usage: '@user',
+            usage: '<player> <reason>',
             cooldown: 3,
             type: 'moderation',
         })

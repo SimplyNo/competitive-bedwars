@@ -9,6 +9,7 @@ export default class JoinCommand extends Command {
             name: 'join',
             aliases: ['j'],
             description: 'Join the queue while being in any voice channel.',
+            type: 'queue',
         })
     }
     async run({ bot, args, message, prefix, serverConf, verifiedConfig }: CommandContext): Promise<void | Message<boolean>> {

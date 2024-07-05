@@ -7,7 +7,8 @@ export default class QueueCallComamnd extends Command {
             name: 'queuecallremove',
             description: "Remove a user's permission to access your queue call",
             aliases: ['qcr'],
-            usage: 'queuecallremove <user>',
+            usage: '<user>',
+            type: 'queue'
         })
     }
     async run({ bot, args, message, prefix, serverConf, verifiedConfig }: CommandContext): Promise<void | Message<boolean>> {

@@ -8,7 +8,8 @@ export default class QueueComamnd extends Command {
             name: 'queuecall',
             description: "Add a user's permission to access your queue call",
             aliases: ['qc'],
-            usage: 'queuecall <user>',
+            usage: '<user>',
+            type: 'queue'
         })
     }
     async run({ bot, args, message, prefix, serverConf, verifiedConfig }: CommandContext): Promise<void | Message<boolean>> {

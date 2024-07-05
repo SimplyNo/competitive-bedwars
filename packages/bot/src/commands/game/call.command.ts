@@ -8,7 +8,8 @@ export default class CallComamnd extends Command {
             name: 'call',
             description: "Add a user's permission to access your game call",
             aliases: ['c'],
-            usage: 'call <user>',
+            usage: '<user>',
+            type: 'game'
         })
     }
     async run({ bot, args, message, prefix, serverConf, verifiedConfig }: CommandContext): Promise<void | Message<boolean>> {

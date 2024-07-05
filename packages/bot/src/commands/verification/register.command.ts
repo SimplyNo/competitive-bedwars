@@ -12,6 +12,7 @@ export default class RegisterCommand extends Command {
             description: 'Link Discord account to a minecraft account',
             type: 'verification',
             aliases: ['r', 'link', 'verify'],
+            usage: '<username>',
             cooldown: 3
         })
     }

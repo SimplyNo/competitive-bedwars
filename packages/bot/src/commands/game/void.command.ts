@@ -9,6 +9,7 @@ export default class VoidCommand extends Command {
             name: 'void',
             aliases: ['v'],
             description: 'Start a vote to void the game.',
+            type: 'game'
 
         })
     }

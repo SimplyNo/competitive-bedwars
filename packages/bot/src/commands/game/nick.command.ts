@@ -6,9 +6,10 @@ export default class NickCommand extends Command {
         super({
             name: 'nick',
             aliases: ['nickname'],
-            description: 'Change the nickname you are using to play ranked bedwars with.',
-            usage: 'nick [nickname]',
-            cooldown: 5
+            description: 'Change the nickname you are using to play competitive bedwars with.',
+            usage: '<nickname>',
+            cooldown: 5,
+            type: 'game'
         })
     }
     async run({ args, bot, flags, message, prefix, serverConf, userConfig, verifiedConfig }: CommandContext): Promise<void | Message<boolean>> {

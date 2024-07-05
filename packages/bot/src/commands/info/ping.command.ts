@@ -6,7 +6,7 @@ export default class PingCommand extends Command {
         super({
             name: 'ping',
             description: 'See info about the bot',
-
+            type: 'info'
         })
     }
     async run({ bot, args, message, prefix, serverConf, verifiedConfig: userConfig }: CommandContext): Promise<void | Message<boolean>> {

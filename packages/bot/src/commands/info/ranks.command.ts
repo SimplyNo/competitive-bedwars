@@ -5,7 +5,8 @@ export default class RanksCommand extends Command {
     constructor() {
         super({
             name: 'ranks',
-            description: 'View the bedwars ranks.'
+            description: 'View the bedwars ranks.',
+            type: 'info'
         })
     }
     async run({ bot, args, message, prefix, serverConf, verifiedConfig }: CommandContext): Promise<void | Message<boolean>> {

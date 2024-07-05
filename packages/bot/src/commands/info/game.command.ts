@@ -7,7 +7,8 @@ export default class GamehCommand extends Command {
         super({
             name: 'game',
             description: 'View a specific game',
-            aliases: ['match', 'vg', 'vm']
+            aliases: ['match', 'vg', 'vm'],
+            type: 'game'
         })
     }
     async run({ bot, args, message, prefix, serverConf, verifiedConfig: userConfig }: CommandContext): Promise<void | Message<boolean>> {

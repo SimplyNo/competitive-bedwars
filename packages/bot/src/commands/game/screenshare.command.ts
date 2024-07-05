@@ -11,7 +11,8 @@ export default class ScreenshareCommand extends Command {
             name: 'screenshare',
             description: 'Submit a screen share request.',
             aliases: ['ss'],
-            usage: `[user] [reason]`
+            type: 'moderation',
+            usage: `<player> <reason>`
         })
     }
     async run({ bot, args, message, prefix, serverConf, verifiedConfig: verifiedUser }: CommandContext): Promise<void | Message<boolean>> {

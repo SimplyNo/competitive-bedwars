@@ -8,6 +8,8 @@ export default class ScoreCommand extends Command {
         super({
             name: 'score',
             description: 'Score a game.',
+            type: 'game',
+            usage: '<replay ID/replay command>'
 
         })
     }

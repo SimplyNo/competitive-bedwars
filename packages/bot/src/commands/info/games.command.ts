@@ -7,7 +7,8 @@ export default class GamesCommand extends Command {
         super({
             name: 'games',
             description: 'View all your CBW games.',
-            aliases: ['matches']
+            aliases: ['matches'],
+            type: 'game'
         })
     }
     async run({ bot, args, message, prefix, serverConf, verifiedConfig: userConfig }: CommandContext): Promise<void | Message<boolean>> {

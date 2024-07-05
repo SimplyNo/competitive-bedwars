@@ -42,7 +42,9 @@ export default class LeaderboardCommand extends Command {
             name: 'leaderboard',
             aliases: ['lb'],
             description: 'See the ranked leaderboard',
-            cooldown: 5
+            cooldown: 5,
+            usage: '<player/position?>',
+            type: 'stats'
         })
     }
     public static calculateImagePage(position: number): number {

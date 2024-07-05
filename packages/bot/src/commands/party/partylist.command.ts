@@ -7,6 +7,7 @@ export default class PartyList extends Command {
         super({
             name: 'partylist',
             aliases: ['pl'],
+            type: 'party',
             description: 'See the list of players in your party.',
         })
     }

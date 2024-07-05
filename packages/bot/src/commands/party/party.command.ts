@@ -41,6 +41,18 @@ export default class PartyCommand extends Command {
             name: 'party',
             aliases: ['p'],
             description: 'Create a party and invite players to join.',
+            type: 'party',
+            subcommands: [
+                { usage: "kick <player>", description: "(Party Leader) Kicks a player from the party" },
+                { usage: "disband", description: "(Party Leader) Disbands the party" },
+                { usage: "autowarp", description: "(Party Leader) Toggles auto warp on and off" },
+                { usage: "warp", description: "(Party Leader) Warps all party members to current channel." },
+                { usage: "list", description: "Lists the players in the party" },
+                { usage: "accept <player?>", description: "Accepts the party invite" },
+                { usage: "leave", description: "Leaves the party" },
+                { usage: "invites", description: "Lists the invites in the party" },
+                { usage: "invite <player>", description: "Invites a player to the party" }
+            ]
         })
     }
     async run({ bot, args, message, prefix, serverConf, verifiedConfig, userConfig }: CommandContext): Promise<void | Message<boolean>> {

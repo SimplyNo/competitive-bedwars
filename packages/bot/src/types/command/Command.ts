@@ -16,6 +16,10 @@ export class Command {
     public devOnly?: boolean;
     public guildMemberOnly?: boolean;
     public economyCooldown?: EconomyCooldown;
+    public subcommands?: {
+        usage: string;
+        description: string;
+    }[]
 
     constructor(options: CommandOptions) {
         this.name = options.name;
@@ -30,6 +34,7 @@ export class Command {
         this.allowedRoles = options.allowedRoles;
         this.guildMemberOnly = options.guildMemberOnly;
         this.economyCooldown = options.economyCooldown;
+        this.subcommands = options.subcommands;
 
     }
     async run(context: CommandContext): Promise<void | Message> {

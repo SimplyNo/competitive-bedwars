@@ -8,7 +8,8 @@ export default class CallRemoveComamnd extends Command {
             name: 'callremove',
             description: "Remove a user's permission to access your game call",
             aliases: ['cr'],
-            usage: 'callremove <user>',
+            usage: '<user>',
+            type: 'game'
         })
     }
     async run({ bot, args, message, prefix, serverConf, verifiedConfig }: CommandContext): Promise<void | Message<boolean>> {

@@ -37,7 +37,8 @@ export default class InfoCommand extends Command {
             name: 'info',
             aliases: ['i', 'stats'],
             description: 'See a player\'s ranked stats',
-            cooldown: 5
+            cooldown: 5,
+            type: 'stats'
         })
     }
     async run({ bot, args, message, prefix, serverConf, verifiedConfig: userConfig }: CommandContext): Promise<void | Message<boolean>> {

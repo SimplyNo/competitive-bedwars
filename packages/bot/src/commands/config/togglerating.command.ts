@@ -8,6 +8,7 @@ export default class ToggleRatingCommand extends Command {
             description: "Toggles rating in nickname",
             aliases: ['toggleelo'],
             cooldown: 5,
+            type: 'config'
         })
     }
     async run({ bot, args, message, prefix, serverConf, verifiedConfig }: CommandContext): Promise<void | Message<boolean>> {

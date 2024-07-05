@@ -6,12 +6,19 @@ export default class IgnoreCommand extends Command {
         super({
             name: 'ignore',
             aliases: ['ignorelist'],
-            description: `Manage players on your ignore list`
+            description: `Manage players on your ignore list`,
+            usage: '<player?>',
+            type: 'config',
+            subcommands: [
+                { usage: 'remove <player>', description: 'Remove a player from the ignore list.' },
+                { usage: 'add <player>', description: 'Add a player to the ignore list.' },
+                { usage: 'list', description: 'Lists your current ignore list.' }
+            ]
         })
     }
     async run({ args, bot, flags, message, prefix, serverConf, userConfig, verifiedConfig }: CommandContext): Promise<void | Message<boolean>> {
         const ignoreList = userConfig.ignoreList || [];
-        if (!args.length) {
+        if (!args.length || args[0].toLowerCase() === 'list') {
             return bot.createEmbed(message)
                 .setTitle(`Current Ignore List`)
                 .setDescription(`Use \`=ignore [User]\` to ignore someone.\nUse \`=ignore remove [User]\` to remove someone from the list.`)
@@ -20,7 +27,7 @@ export default class IgnoreCommand extends Command {
                 ])
                 .send()
         }
-        if (args[0] === 'remove') {
+        if (args[0].toLowerCase() === 'remove') {
             const user = await bot.parseMember(args.slice(1).join(' '), message.guild);
             if (!user) return bot.createErrorEmbed(message).setDescription(`User \`${args.slice(1).join(' ')}\`not found.`).send();
             if (!ignoreList.includes(user.id)) return bot.createErrorEmbed(message).setDescription(`This person is not on your ignore list.`).send();

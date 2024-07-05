@@ -6,9 +6,9 @@ export default class HelpCommand extends Command {
         super({
             name: 'help',
             description: 'Displays all available commands',
-            type: 'misc',
+            type: 'info',
             aliases: ['h'],
-            usage: 'help [command]',
+            usage: 'help <command>',
 
         });
     }
@@ -33,16 +33,16 @@ export default class HelpCommand extends Command {
                 /**
                  * @todo alphabetical order
                  */
-                msg = '`' + keys.map(key => commands.find(el => el.name == key).name).join('`, `') + '`';
+                msg = keys.map(key => commands.find(el => el.name == key).name).join(', ');
 
                 // keys.forEach(key => {
                 //     let cmd = commands.find(el => el.name == key); // \u2009
                 //     msg += `\`${cmd.name}\``
                 // })
-
-                embed.addFields({ name: realNames[type] + " Commands", value: msg });
+                console.log(type)
+                embed.addFields({ name: `${realNames[type].name}`, value: msg });
             })
-            embed.setFooter({ text: `Use ${prefix}help [Command] for specific command information` }).send()
+            embed.setFooter({ text: `Use ${prefix}help <command> for specific command information` }).send()
         } else {
             let commandName = args[0];
             let command =
@@ -56,29 +56,37 @@ export default class HelpCommand extends Command {
                         bot
                             .createErrorEmbed()
                             .setTitle("Unknown Command!")
-                            .setDescription("This command does not exist smh")
+                            .setDescription("This command does not exist.")
                     ]
                 }
                 );
+            console.log(command);
             return message.channel.send({
                 embeds: [
 
                     bot.createEmbed()
                         .setTitle(`Command: ${command.name}`)
-                        .setDescription(command.description || "No description provided")
+                        .setDescription(`${command.description}` || "No description provided")
                         .addFields({
                             name: "Usage",
                             value: `\`${prefix}${command.name} ${command.usage || ""}\``,
                             inline: true
-                        }, {
-                            name: "Aliases",
-                            value: command.aliases ? `\`${command.aliases.join("`, `")}\`` : "None",
-                            inline: true
-                        }, {
-                            name: "Type",
-                            value: realNames[command.type || "misc"],
-                            inline: true
-                        })
+                        },
+                            {
+                                name: "Aliases",
+                                value: command.aliases ? `\`${command.aliases.join("`, `")}\`` : "None",
+                                inline: true
+                            },
+                            {
+                                name: "Type",
+                                value: realNames[command.type || "misc"].name,
+                                inline: true
+                            },
+                            {
+                                name: "Subcommands",
+                                value: command.subcommands?.map(cmd => `\`=${command.name} ${cmd.usage}\` — **${cmd.description}**`).join("\n") || "None",
+                            },
+                        )
                 ]
             }
 

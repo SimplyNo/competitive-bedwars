@@ -20,19 +20,68 @@ export interface CommandOptions {
     examples?: string[],
     cooldown?: number,
     allowedRoles?: string[],
-    economyCooldown?: EconomyCooldown
+    economyCooldown?: EconomyCooldown,
+    subcommands?: {
+        usage: string;
+        description: string;
+    }[]
 }
 export const realNames = {
-    dev: "🤓 Developer",
-    admin: "<:bluq:725843128745197649> Admin",
-    moderation: "🔨 Moderation",
-    guild: "<:lucid:870428643283853382> Guild",
-    verification: "✅ Verification",
-    config: "⚙️ Config",
-    game: "🕹️ Game",
-    tokens: "🪙 Tokens",
-    misc: "❓ Misc.",
-    event: "🎃 Event",
-    economy: "🤑 Economy",
+    dev: {
+        name: "Developer Commands",
+        emoji: "👨‍💻",
+        adminOnly: true
+    },
+    admin: {
+        name: "Admin Commands",
+        emoji: "👮‍♂️",
+        adminOnly: true
+    },
+    verification: {
+        name: "Verification Commands",
+        emoji: "👮‍♂️",
+        adminOnly: true
+    },
+    config: {
+        name: "User Config Commands",
+        emoji: "⚙",
+    },
+    moderation: {
+        name: "Moderation Commands",
+        emoji: "👮‍♂️"
+    },
+    game: {
+        name: "Game Commands",
+        emoji: "🎮",
+    },
+    queue: {
+        name: "Queue Commands",
+        emoji: "🎮",
+    },
+    stats: {
+        name: "Stat Commands",
+        emoji: "📊",
+    },
+    info: {
+        name: "Info Commands",
+        emoji: "ℹ",
+    },
+    party: {
+        name: "Party Commands",
+        emoji: "🎉",
+    },
+    pugs: {
+        name: "PUGs Commands",
+        emoji: "🎮",
+    },
+    premium: {
+        name: "Premium Commands",
+        emoji: "💎",
+    },
+    misc: {
+        name: "Misc",
+        emoji: "❓"
+    }
+
 }
 export type CommandType = keyof typeof realNames;
