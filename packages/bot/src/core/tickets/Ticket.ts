@@ -55,7 +55,11 @@ export class Ticket {
                     id: this.bot.getMainGuild()?.roles.everyone!,
                     type: OverwriteType.Role,
                     deny: [PermissionFlagsBits.ViewChannel]
-                }
+                },
+                ...this.users.map(u => ({
+                    id: u,
+                    allow: [PermissionFlagsBits.SendMessages, PermissionFlagsBits.ViewChannel]
+                }))
             ]
         )
     }

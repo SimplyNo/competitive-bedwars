@@ -19,7 +19,7 @@ export class RankedUserManager {
         this.verifiedUser.set({ rbw: { elo: 0, gameHistory: [], wins: 0, losses: 0, voids: 0, mvps: 0, streak: 0, highestStreak: 0, bedsBroken: 0, commends: 0 } });
     }
     public addElo(elo: number) {
-        this.setElo(this.verifiedUser.rbw.elo + elo);
+        return this.setElo(this.verifiedUser.rbw.elo + elo);
     }
     public addCommend() {
         this.verifiedUser.rbw.commends++;
@@ -27,9 +27,11 @@ export class RankedUserManager {
     }
     public setElo(elo: number) {
         this.bot.log(`&b[ELO CHANGE] [${this.verifiedUser.username}] &d${this.verifiedUser.rbw.elo} &7-> &d${elo}`)
-        this.verifiedUser.rbw.elo = Math.max(elo, 0);
+        const change = Math.max(elo, 0);
+        this.verifiedUser.rbw.elo = change;
         this.verifiedUser.set({ rbw: this.verifiedUser.rbw });
         this.verifiedUser.getUser().updateMember(true);
+        return change;
     }
     public getStat(stat: validStats) {
         if (stat === 'wlr') return this.verifiedUser.rbw.wins / this.verifiedUser.rbw.losses;

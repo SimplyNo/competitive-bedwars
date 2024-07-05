@@ -15,6 +15,7 @@ export default class RenameChannelInterval extends Interval {
         const playing = bot.rankedManager.getActiveGames().reduce((acc, game) => acc + game.players.length, 0);
         const inQueue = bot.matchMaking.getAllInQueue().length;
         const total = Math.max(Math.floor((playing + inQueue) / 5) * 5, playing + inQueue);
-        queueChannel?.setName(`Queue (${total}+ Playing)`)
+        // queueChannel?.setName(`Queue (${total}+ Playing)`)
+        queueChannel?.setName(`Join Queue`)
     }
 }

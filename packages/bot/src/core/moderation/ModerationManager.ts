@@ -2,15 +2,15 @@ import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedField, TextChannel, 
 import { Bot } from "../../Bot";
 import { UserConfig } from "../../types/config/UserConfig";
 import { Util } from "../../util/Util";
-export type strike = { date: number, reason?: string, moderator: string };
+export type strike = { date: number, reason?: string, moderator: string, eloLost?: number };
 export type mute = { date: number, reason?: string, moderator: string, end: number, time: number };
 export type ban = { date: number, reason?: string, moderator: string, end?: number, time?: number };
 
 export class ModerationManager {
     constructor(private bot: Bot, public user: UserConfig) { }
     strike(mod: string, reason?: string) {
-        this.user.set({ strikes: this.user.strikes.concat({ date: Date.now(), reason: reason || 'No reason specified', moderator: mod }) });
-        this.user.getVerified()?.ranked().addElo(-25);
+        const eloLost = (this.user.getVerified()?.rbw.elo || 0) - (this.user.getVerified()?.ranked().addElo(-25) || 0);
+        this.user.set({ strikes: this.user.strikes.concat({ date: Date.now(), reason: reason || 'No reason specified', moderator: mod, eloLost }) });
         // this.logStrike((discorduser) => ({ title: `${discorduser.tag} was strikeed`, description: `<@${this.user.id}> (id: \`${this.user.id}\`) was strikeed by <@${mod}> (id: \`${mod}\`). \n\nReason: **${reason || 'No Reason Specified'}**\nThey now have **${this.user.strikes.length}** strikes.` }),)
         this.logStrike(mod, reason || 'No Reason Specified')
         this.check();
@@ -189,11 +189,11 @@ export class ModerationManager {
         return this;
     }
     liftStrike(mod: string, strikeID: number, reason?: string) {
-        let strike = this.user.strikes.splice(strikeID, 1);
-        // add back 25
-        // this.user.getVerified()?.ranked().addElo(25);
+        let strike = this.user.strikes.splice(strikeID, 1)[0];
+        //add back lost elo
+        if (strike.eloLost) this.user.getVerified()?.ranked().addElo(strike.eloLost);
         // this.logStrike((discorduser) => ({ title: `${discorduser.tag} was pardoned.`, description: `<@${this.user.id}> (id: \`${this.user.id}\`) was pardoned by <@${mod}> (id: \`${mod}\`) of a strike. \n\nReason: **${reason || 'No Reason Specified'}**` }))
-        this.logStrike(mod, reason || 'No Reason Specified', strike[0])
+        this.logStrike(mod, reason || 'No Reason Specified', strike)
         this.user.set({ strikes: this.user.strikes });
         return this;
     }
