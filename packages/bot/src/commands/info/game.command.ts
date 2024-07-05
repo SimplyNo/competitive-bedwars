@@ -28,12 +28,12 @@ export default class GamehCommand extends Command {
 `)
             .addFields([
                 {
-                    name: `${game.voided ? '<:yellow:1253994443271573535>' : game.results?.winner === 'team1' ? '<:green:1253993484159811605>' : '<:red:1253993484755533926>'} Team 1`,
+                    name: `${game.voided ? '<:yellow:1256186102352576652>' : game.results?.winner === 'team1' ? '<:green:1256186072531079179>' : '<:red:1256186121306771551>'} Team 1`,
                     value: `${game.game?.team1.map(p => `• <@${p.id}>`).join('\n')}`,
                     inline: true
                 },
                 {
-                    name: `${game.voided ? '<:yellow:1253994443271573535>' : game.results?.winner === 'team2' ? '<:green:1253993484159811605>' : '<:red:1253993484755533926>'} Team 2`,
+                    name: `${game.voided ? '<:yellow:1256186102352576652>' : game.results?.winner === 'team2' ? '<:green:1256186072531079179>' : '<:red:1256186121306771551>'} Team 2`,
                     value: `${game.game?.team2.map(p => `• <@${p.id}>`).join('\n')}`,
                     inline: true
                 }

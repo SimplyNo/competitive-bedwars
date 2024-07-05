@@ -27,7 +27,7 @@ export default class GamesCommand extends Command {
         const pages = Util.chunkArray(gameHistory, 8).map((games, index) => {
             return bot.createEmbed()
                 .setTitle(`${Util.capitalizeFirstLetter(verified.username || 'Player')}'s Recent Games`)
-                .setDescription(games.map(g => `${g.outcome === 'win' ? '<:green:1253993484159811605>' : g.outcome === 'loss' ? '<:red:1253993484755533926>' : '<:yellow:1253994443271573535> ~~'} Game #${g.id} (${Util.getDiscordTimeFormat(g.date || Date.now(), "D")})${g.outcome === 'void' ? '~~' : ''}`).join('\n') || 's')
+                .setDescription(games.map(g => `${g.outcome === 'win' ? '<:green:1256186072531079179>' : g.outcome === 'loss' ? '<:red:1256186121306771551>' : '<:yellow:1256186102352576652> ~~'} Game #${g.id} (${Util.getDiscordTimeFormat(g.date || Date.now(), "D")})${g.outcome === 'void' ? '~~' : ''}`).join('\n') || 's')
                 .setFooter({ text: `Page ${index + 1} of ${Math.ceil(gameHistory.length / 8)} • Competitive Bedwars`, iconURL: `https://i.imgur.com/itMN1e0.png` });
         });
         let currentPage = Math.min(pageNumber || 1, pages.length);
