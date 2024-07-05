@@ -116,7 +116,7 @@ Reason: ${p.reason}`
             })
         })
             .on('end', () => {
-                msg.edit({ components: [] });
+                msg.edit({ components: [] }).catch(e => null);
             })
     }
 

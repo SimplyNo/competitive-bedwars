@@ -9,6 +9,7 @@ export default {
         bot.log(`Logged in as ${bot.user?.tag}!`);
         bot.loadIntervals();
         bot.matchMaking.forceUpdateQueues();
+        bot.rankedManager.refreshActiveGames();
         // const channel = bot.channels.cache.get('1247293969923313754') as TextBasedChannel;
         // channel.send(await InfoCommand.generateInfoCard());
     }

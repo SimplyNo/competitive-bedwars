@@ -79,6 +79,7 @@ export class Party {
         this._update();
     }
     public addMember(member: VerifiedConfig) {
+        this.bot.matchMaking.remove(member);
         this.members.push(member);
         this._update();
         this.leader.getUser().resolveMember().then(async (leader) => {
@@ -121,10 +122,8 @@ export class Party {
     }
     public restartQueue() {
         // remove all members from queue and readd:
-        this.members.forEach(m => {
+        this.members.filter(m => this.bot.matchMaking.isInQueue(m)).forEach(m => {
             this.bot.matchMaking.remove(m);
-        })
-        this.members.forEach(m => {
             this.bot.matchMaking.add(m);
         })
     }

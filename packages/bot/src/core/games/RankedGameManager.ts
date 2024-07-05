@@ -21,6 +21,15 @@ export class RankedGameManager {
     _deleteAllGames() {
         this.games.clear()
     }
+    async refreshActiveGames() {
+        this.getActiveGames().forEach(async game => {
+            const textchannel = await this.bot.parseChannel(game.textChannel, this.bot.getMainGuild()!);
+            if (!textchannel) {
+                console.log(`[Refresh] Closing game #${game.id} because the text channel doesnt exist.`);
+                return game.close();
+            }
+        })
+    }
     private loadGame(game: RawRankedGame) {
         const instanced = this.gameInstances.get(game.id.toString());
         if (instanced) return instanced;
