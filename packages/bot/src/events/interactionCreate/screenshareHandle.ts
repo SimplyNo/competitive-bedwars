@@ -12,6 +12,8 @@ export default {
 
         const [check, action, ticketID] = customId.split('-');
         if (check !== 'screenshare' || !['claim', 'delete', 'close'].includes(action)) return;
+        if (!interaction.member.roles.cache.some(r => [bot.config.roles.screensharer, bot.config.roles.staff].includes(r.id))) return;
+
         const ticket = tickets.getTicketByID(parseInt(ticketID));
         console.log(ticketID, customId)
         if (!ticket) return interaction.reply({ content: 'Ticket not found!', ephemeral: true });

@@ -104,7 +104,7 @@ export class RankedGameManager {
             embeds: [
                 this.bot.createEmbed()
                     .setTitle(`Current Map Pool`)
-                    .setDescription(`${this.bot.config.mapPool.map(m => `• **${m}**`).join('\n')}`)
+                    .setDescription(`${this.bot.config.mapPool.map(m => `• **${m}**`).join('\n')}\n\nOnly 1 ban map.`)
             ]
         })
         await textChannel.send(`Game has started. Use \`=score [replay]\` to score the game.`)
@@ -340,6 +340,10 @@ export class RankedGameManager {
     }
     public getGameByReplayID(id: string) {
         const game = this.games.find(g => g.replayScoring?.replayID === id);
+        return game ? this.loadGame(game) : null;
+    }
+    public getGameByVoiceChannel(channelID: string) {
+        const game = this.games.filter(g => g.active).find(g => g.game?.team1Voice === channelID || g.game?.team2Voice === channelID);
         return game ? this.loadGame(game) : null;
     }
     public getGameByTextChannel(channelID: string, includeInactives = false) {

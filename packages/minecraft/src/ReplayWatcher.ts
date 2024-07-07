@@ -134,7 +134,7 @@ export class ReplayWatcher {
         const rbwPlayers = [...this.activeGame.team1, ...this.activeGame.team2];
         console.log(`Players In Game:`, rbwPlayers.map(p => p.username))
         rbwPlayers.forEach(({ username }) => {
-            const player = players.find(p => p == username);
+            const player = players.find(p => p.toLowerCase() == username.toLowerCase());
             if (!player) {
                 // missing.push(username);
                 return console.error(`!!!!!! FAILED TO FIND PLAYER ${username} IN GAME !!!!!!`);
@@ -170,7 +170,7 @@ export class ReplayWatcher {
             AutoScoreAPI.send('log', {
                 channelID: this.channelID, email: this.email, data: {
                     content: `\`\`\`ansi
-[2;37m[Game ${this.activeGame.gameID}] [2;31mFailed to validate all players in the game.\nPlayers In Replay: ${players}\nCBW Players: ${rbwPlayers.map(p => p.username)}\nAborting auto score.[0m[2;37m[0m
+[2;37m[Game ${this.activeGame.gameID}] [2;31mFailed to validate all players in the game.\nPlayers In Replay: ${players.sort().join(', ')}\n\nCBW Players: ${rbwPlayers.map(p => p.username).sort().join(', ')}\nAborting auto score.[0m[2;37m[0m
 \`\`\``}
             })
         } else {
@@ -245,10 +245,10 @@ export class ReplayWatcher {
         }
         if (this.isInReplay && this.activeGame) {
             const { json } = message;
-            const players = this.activeGame.team1.concat(this.activeGame.team2).map(({ username }) => username).concat(Object.keys(this.tempNickedUsernameMap));
+            const players = this.activeGame.team1.concat(this.activeGame.team2).map(({ username }) => username.toLowerCase()).concat(Object.keys(this.tempNickedUsernameMap));
             console.log(`players:`, players);
             console.log(`nickedPlayers:`, this.tempNickedUsernameMap);
-            const killActionFilter = json.extra?.filter((j: any) => players.includes(j.text.trim()));
+            const killActionFilter = json.extra?.filter((j: any) => players.includes(j.text.trim().toLowerCase()));
             const bedBreakActionFilter = json.extra?.[1]?.text === "BED DESTRUCTION > ";
             if (bedBreakActionFilter) {
                 console.log(`bed break detected data:`, json.extra)

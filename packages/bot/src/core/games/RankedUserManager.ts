@@ -34,11 +34,16 @@ export class RankedUserManager {
         return change;
     }
     public getStat(stat: validStats) {
-        if (stat === 'wlr') return this.verifiedUser.rbw.wins / this.verifiedUser.rbw.losses;
-        if (stat === 'games') return this.verifiedUser.rbw.gameHistory.length;
-        if (stat === 'beds_percent') return this.verifiedUser.rbw.bedsBroken / this.verifiedUser.rbw.gameHistory.length * 100;
-        if (stat === 'mvp_percent') return this.verifiedUser.rbw.mvps / this.verifiedUser.rbw.gameHistory.length * 100;
-        return this.verifiedUser.rbw[stat];
+        let val: number;
+        if (stat === 'wlr') val = this.verifiedUser.rbw.wins / (this.verifiedUser.rbw.losses || 1);
+        else if (stat === 'games') val = this.verifiedUser.rbw.gameHistory.filter(g => g.outcome === 'win' || g.outcome === 'loss').length;
+        else if (stat === 'beds_percent') val = this.verifiedUser.rbw.bedsBroken / this.verifiedUser.rbw.gameHistory.length * 100;
+        else if (stat === 'mvp_percent') val = this.verifiedUser.rbw.mvps / this.verifiedUser.rbw.gameHistory.length * 100;
+        else if (stat === 'streak') {
+            const gameHistory = this.verifiedUser.rbw.gameHistory.sort((a, b) => b.id - a.id).filter(g => g.outcome === 'win' || g.outcome === 'loss');
+            val = gameHistory.indexOf(gameHistory.find(g => g.outcome == 'loss') || gameHistory[0]);
+        } else val = this.verifiedUser.rbw[stat];
+        return Math.floor((val || 0) * 100) / 100;
     }
     public getRankFromElo(elo = this.verifiedUser.rbw.elo) {
         const rank = [...ranks].reverse().find(r => r.min <= elo) || ranks[ranks.length - 1];

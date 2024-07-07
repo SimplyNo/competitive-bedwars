@@ -10,6 +10,7 @@ export default {
     async run(bot, interaction) {
         if (!interaction.isCommand()) return;
         if (!interaction.inCachedGuild()) return;
+        if (!interaction.isChatInputCommand()) return;
         if (interaction.guild.id !== bot.mainGuild && interaction.guild.id !== bot.staffGuild) return;
 
         const command = bot.slashCommands.get(interaction.commandName);
@@ -32,7 +33,7 @@ export default {
         const context = new SlashCommandContext(bot, interaction);
         if (command.adminOnly && !interaction.member?.permissions.has('Administrator') && !bot.config.developers.includes(interaction.member?.id!)) return bot.createErrorEmbed(interaction).setDescription(`You must be an administrator to use this command!`).send();
         if (command.devOnly && !bot.config.developers.includes(interaction.user.id)) return bot.createErrorEmbed(interaction).setDescription(`You must be a developer to use this command!`).send();
-        if (command.staffOnly && !interaction.member?.permissions.has('Administrator') && !interaction.member.roles.cache.some(role => bot.config.roles.staff.includes(role.id))) return bot.createErrorEmbed(interaction).setDescription(`You must be a staff member to use this command!`).send()
+        if (command.staffOnly && !interaction.member?.permissions.has('Administrator') && !interaction.member.roles.cache.some(role => [bot.config.roles.staff, bot.config.roles.screensharer].includes(role.id))) return bot.createErrorEmbed(interaction).setDescription(`You must be a staff member to use this command!`).send()
         if (command.allowedRoles && !interaction.member?.roles.cache.some(role => !!command.allowedRoles?.includes(role.id)) && !bot.config.developers.includes(interaction.user.id)) return bot.createErrorEmbed(interaction).setDescription(`You must have one of the following roles to use this command: ${command.allowedRoles?.map(role => `<@&${role}>`).join(', ')}`).send();
         bot.log(`&7[Commands] &a${interaction.user.tag}&7 ran command &a${interaction.toString()}&7 in &a${interaction.guild.name}&7 (${interaction.guild.id})`)
 

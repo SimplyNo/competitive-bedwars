@@ -83,7 +83,6 @@ export default class LeaderboardCommand extends Command {
         else type = 'elo';
 
         const leaderboard = bot.rankedManager.getLeaderboard(type)
-
         // let position = verified ? verified.ranked().getPosition(type) : type === 'elo' && !flags['text'] ? LeaderboardCommand.calculatePositionElo((pageNumber - 1) || 0) : LeaderboardCommand.calculatePosition((pageNumber - 1) || 0);
         let position = verified ? verified.ranked().getPosition(type) : !flags['text'] ? LeaderboardCommand.calculateImagePosition((pageNumber - 1) || 0) : LeaderboardCommand.calculatePosition((pageNumber - 1) || 0);
         if (!leaderboard[position]) position = leaderboard.length - 1;
@@ -125,10 +124,10 @@ export default class LeaderboardCommand extends Command {
         async function generateLeaderboardOptions(position: number) {
             return !flags['text'] ? {
                 files: [{
-                    attachment: await LeaderboardCommand.generateImageLeaderboard(leaderboard.map(e => ({ username: e.username!, stat: e.rbw[type] || 0, elo: e.rbw.elo })), position, type)
+                    attachment: await LeaderboardCommand.generateImageLeaderboard(leaderboard.map(e => ({ username: e.username!, stat: e.ranked().getStat(type) || 0, elo: e.rbw.elo })), position, type)
                 }],
             } : {
-                embeds: [await LeaderboardCommand.generateLeaderboard(type, leaderboard.map(e => ({ username: e.username!, stat: e.rbw[type] || 0, elo: e.rbw.elo })), position)]
+                embeds: [await LeaderboardCommand.generateLeaderboard(type, leaderboard.map(e => ({ username: e.username!, stat: e.ranked().getStat(type) || 0, elo: e.rbw.elo })), position)]
             }
         }
     }

@@ -138,6 +138,8 @@ export class RankedGame {
         // })
     }
     public async void(reason: string) {
+        if (this.results) this.undoScore();
+
         this.update({ voided: { reason } });
         this.players.forEach(player => {
             player.ranked()
