@@ -82,6 +82,7 @@ export class RankedGame {
         this.update({ results: undefined });
     }
     public async scoreGame(results: Omit<Exclude<Required<RankedGame['results']>, undefined>, "eloChanges">, forceElo = false) {
+        let rescore = !!this.results;
         if (this.results) this.undoScore();
         if (!this.game) return console.error(`!!!!!! TRYING TO SCORE A GAME THAT DOESN'T EXIST??? ID: ${this.id}`);
         const winners = results.winner === 'team1' ? this.game.team1 : this.game.team2;
@@ -119,7 +120,7 @@ export class RankedGame {
             voided: undefined
         })
         this.bot.logger.log(this.bot.config.channels.gameLogs, {
-            content: `${this.players.map(p => `<@${p.id}>`).join(' ')}`,
+            content: `${this.players.map(p => `<@${p.id}>`).join(' ')}${rescore ? '(Rescored)' : ''}`,
             files: [
                 await ScoreImage.generateScoreImage(this.id, results.winner, scoringPlayers)
             ]

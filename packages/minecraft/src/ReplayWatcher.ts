@@ -125,7 +125,6 @@ export class ReplayWatcher {
     private async validateUsernames() {
         if (!this.activeGame) return console.error(`!!! No current process to validate usernames for.`);
         this.hasValidatedUsernames = true;
-        let missing: string[] = [];
         let validated: string[] = [];
         await Util.wait(1000);
         const players = (await this.bot.tabComplete(' ')).filter(p => p !== this.bot.username);
@@ -137,16 +136,19 @@ export class ReplayWatcher {
         rbwPlayers.forEach(({ username }) => {
             const player = players.find(p => p == username);
             if (!player) {
-                missing.push(username);
+                // missing.push(username);
                 return console.error(`!!!!!! FAILED TO FIND PLAYER ${username} IN GAME !!!!!!`);
             }
             validated.push(player);
             this.currentGameStats[player] = { kills: 0, beds: 0, deaths: 0, isFinalKilled: false };
         })
+        let missing: string[] = players.filter(p => !validated.includes(p));
+        console.log(`MISSING PLAYERS:`, missing)
         if (rbwPlayers.length === players.length && missing.length === 1) {
             // assume missing player is last person
             const missingPlayer = rbwPlayers.find(p => !validated.includes(p.username));
             if (missingPlayer) {
+                // console.log()
                 validated.push(missingPlayer.username);
                 this.currentGameStats[missingPlayer.username] = { kills: 0, beds: 0, deaths: 0, isFinalKilled: false };
                 this.tempNickedUsernameMap[missing[0]] = missingPlayer.username;
@@ -243,7 +245,9 @@ export class ReplayWatcher {
         }
         if (this.isInReplay && this.activeGame) {
             const { json } = message;
-            const players = this.activeGame.team1.concat(this.activeGame.team2).map(({ username }) => username);
+            const players = this.activeGame.team1.concat(this.activeGame.team2).map(({ username }) => username).concat(Object.keys(this.tempNickedUsernameMap));
+            console.log(`players:`, players);
+            console.log(`nickedPlayers:`, this.tempNickedUsernameMap);
             const killActionFilter = json.extra?.filter((j: any) => players.includes(j.text.trim()));
             const bedBreakActionFilter = json.extra?.[1]?.text === "BED DESTRUCTION > ";
             if (bedBreakActionFilter) {
@@ -269,7 +273,9 @@ export class ReplayWatcher {
                 if (killer) this.currentGameStats[killer].kills++;
                 if (action.finalKill) this.currentGameStats[victim].isFinalKilled = true;
                 console.log(`action detected:`, action)
-
+                // move forward
+                this.bot.setControlState(Util.randomIndex(['forward', 'back', 'left', 'right']), true);
+                Util.wait(1000).then(() => this.bot.clearControlStates());
             } else {
                 console.log(`unknown action:`, message.toAnsi())
             }
