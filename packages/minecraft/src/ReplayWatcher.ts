@@ -170,19 +170,19 @@ export class ReplayWatcher {
             AutoScoreAPI.send('log', {
                 channelID: this.channelID, email: this.email, data: {
                     content: `\`\`\`ansi
-[2;37m[Game ${this.activeGame.gameID}] [2;31mFailed to validate all players in the game (${validated}/${totalPlayers}). Aborting auto score.[0m[2;37m[0m
+[2;37m[Game ${this.activeGame.gameID}] [2;31mFailed to validate all players in the game.\nPlayers In Replay: ${players}\nCBW Players: ${rbwPlayers.map(p => p.username)}\nAborting auto score.[0m[2;37m[0m
 \`\`\``}
             })
         } else {
             AutoScoreAPI.send('log', {
                 channelID: this.channelID, email: this.email, data: {
                     content: `\`\`\`ansi
-[2;37m[Game ${this.activeGame.gameID}] [2;31m[2;32mSuccessfully validated ${validated}/${totalPlayers} players. [0m[2;31m[0m[2;37m[0m
+[2;37m[Game ${this.activeGame.gameID}] [2;31m[2;32mSuccessfully validated ${validated.length}/${totalPlayers} players. [0m[2;31m[0m[2;37m[0m
 \`\`\``
                 }
             })
         }
-        console.log(`${validated.length === totalPlayers ? '✅' : '❌'} ${validated}/${totalPlayers} players validated and updated.`);
+        console.log(`${validated.length === totalPlayers ? '✅' : '❌'} ${validated.length}/${totalPlayers} players validated and updated.`);
         return validated.length === totalPlayers;
     }
     private onMessage: BotEvents['message'] = async (message, position) => {

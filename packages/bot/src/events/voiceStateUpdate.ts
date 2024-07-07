@@ -56,9 +56,10 @@ Do not leave the game, otherwise, you will be issued a strike. Wait for the play
                                     const team2 = (<VoiceChannel>await bot.parseChannel(currentGame.game?.team2Voice, bot.getMainGuild()!))?.members.map(p => p.id);
                                     const playersWhoLeft = currentGame.players.filter(p => ![...team1, ...team2].includes(p.id));
                                     console.log(`playersWhoLeft:`, playersWhoLeft.map(p => p.username))
-                                    playersWhoLeft.forEach(p => {
-                                        p.getUser().moderate().strike(bot.user?.id!, `Left the game voice channel.`);
-                                    })
+                                    verifiedUser.getUser().moderate().strike(bot.user?.id!, `Left the game voice channel.`);
+                                    // playersWhoLeft.forEach(p => {
+                                    //     p.getUser().moderate().strike(bot.user?.id!, `Left the game voice channel.`);
+                                    // })
                                     gameChannelLeavesTimeout.delete(verifiedUser.id);
                                     currentGame.void(`${verifiedUser.username} left the game.`);
                                 }
