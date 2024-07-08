@@ -15,39 +15,39 @@ export default {
         if (!interaction.inCachedGuild()) return;
         const [check, userID, action, isClosed] = interaction.customId.split("-");
         const voter = bot.getUser(interaction.user.id);
-        if (check !== 'pugsvoting') return;
+        if (check !== 'pupsvoting') return;
         if (isClosed) return;
-        const pugsVote = voter.pugVotes?.[interaction.message.id];
+        const pupsVote = voter.pupVotes?.[interaction.message.id];
         const user = bot.getUser(userID);
-        console.log(voter.pugVotes);
+        console.log(voter.pupVotes);
         if (action === 'upvote') {
-            voter.pugVotes = { ...voter.pugVotes, [interaction.message.id]: 'upvote' };
-            voter.set({ pugVotes: voter.pugVotes });
-            if (pugsVote === 'upvote') return interaction.reply({ content: `You already upvoted this.`, ephemeral: true });
-            user.set({ pugUpvotes: (user.pugUpvotes || 0) + 1 });
-            if (pugsVote === 'downvote') user.set({ pugDownvotes: user.pugDownvotes! - 1 });
-            interaction.reply({ content: !pugsVote ? `Upvoted!` : `Vote switched to **upvote**!`, ephemeral: true });
+            voter.pupVotes = { ...voter.pupVotes, [interaction.message.id]: 'upvote' };
+            voter.set({ pupVotes: voter.pupVotes });
+            if (pupsVote === 'upvote') return interaction.reply({ content: `You already upvoted this.`, ephemeral: true });
+            user.set({ pupUpvotes: (user.pupUpvotes || 0) + 1 });
+            if (pupsVote === 'downvote') user.set({ pupDownvotes: user.pupDownvotes! - 1 });
+            interaction.reply({ content: !pupsVote ? `Upvoted!` : `Vote switched to **upvote**!`, ephemeral: true });
             interaction.message.edit({
-                embeds: [getPugsEmbed(bot, user)],
+                embeds: [getPupsEmbed(bot, user)],
             })
         } else if (action === 'downvote') {
-            if (pugsVote === 'downvote') return interaction.reply({ content: `You already downvoted this.`, ephemeral: true });
-            voter.pugVotes = { ...voter.pugVotes, [interaction.message.id]: 'downvote' };
-            voter.set({ pugVotes: voter.pugVotes });
-            user.set({ pugDownvotes: (user.pugDownvotes || 0) + 1 });
-            if (pugsVote === 'upvote') user.set({ pugUpvotes: user.pugUpvotes! - 1 });
-            interaction.reply({ content: !pugsVote ? `Downvoted!` : `Vote switched to **downvote**!`, ephemeral: true });
+            if (pupsVote === 'downvote') return interaction.reply({ content: `You already downvoted this.`, ephemeral: true });
+            voter.pupVotes = { ...voter.pupVotes, [interaction.message.id]: 'downvote' };
+            voter.set({ pupVotes: voter.pupVotes });
+            user.set({ pupDownvotes: (user.pupDownvotes || 0) + 1 });
+            if (pupsVote === 'upvote') user.set({ pupUpvotes: user.pupUpvotes! - 1 });
+            interaction.reply({ content: !pupsVote ? `Downvoted!` : `Vote switched to **downvote**!`, ephemeral: true });
             interaction.message.edit({
-                embeds: [getPugsEmbed(bot, user)],
+                embeds: [getPupsEmbed(bot, user)],
             })
         } else if (action === 'endvote') {
-            if (interaction.member.roles.cache.has(bot.config.roles.pugsManager)) {
+            if (interaction.member.roles.cache.has(bot.config.roles.pupsManager)) {
                 interaction.reply({ content: `Vote Ended!`, ephemeral: true });
-                const { pugUpvotes, pugDownvotes } = user;
+                const { pupUpvotes, pupDownvotes } = user;
                 interaction.message.edit(
                     {
                         embeds: [
-                            getPugsEmbed(bot, user).setDescription(`<@${user.id}> has been **${pugUpvotes! > pugDownvotes! ? 'accepted' : 'denied'}** into PUGS.`)
+                            getPupsEmbed(bot, user).setDescription(`<@${user.id}> has been **${pupUpvotes! > pupDownvotes! ? 'accepted' : 'denied'}** into PUPS.`)
                         ],
                         components: [
                             new ActionRowBuilder<ButtonBuilder>()
@@ -55,14 +55,14 @@ export default {
                                     new ButtonBuilder()
                                         .setLabel(`Vote Ended`)
                                         .setStyle(ButtonStyle.Secondary)
-                                        .setCustomId(`pugsvoting-${userID}-endvote`)
+                                        .setCustomId(`pupsvoting-${userID}-endvote`)
                                         .setDisabled(true)
                                 )
                         ]
                     })
             } else {
                 interaction.reply({
-                    content: `You need <@&${bot.config.roles.pugsManager}> role to do this.`,
+                    content: `You need <@&${bot.config.roles.pupsManager}> role to do this.`,
                     ephemeral: true
                 })
             }
@@ -71,18 +71,18 @@ export default {
     }
 
 } as Event<"interactionCreate">
-export function getPugsEmbed(bot: Bot, user: UserConfig) {
+export function getPupsEmbed(bot: Bot, user: UserConfig) {
     return bot.createEmbed()
-        .setTitle(`${user.getVerified()?.username}'s PUGs Vote Request`)
+        .setTitle(`${user.getVerified()?.username}'s PUPs Vote Request`)
         .addFields([
             {
                 name: 'Upvotes:',
-                value: `${user.pugUpvotes || 0}`,
+                value: `${user.pupUpvotes || 0}`,
                 inline: true
             },
             {
                 name: 'Downvotes:',
-                value: `${user.pugDownvotes || 0}`,
+                value: `${user.pupDownvotes || 0}`,
                 inline: true
             }
         ])

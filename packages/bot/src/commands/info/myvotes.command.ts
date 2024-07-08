@@ -15,20 +15,21 @@ export default class MyVotesCommand extends Command {
         const user = (await bot.parseMember(args[0], message.guild)) || message.member;
         if (!user) return bot.createErrorEmbed(message).setDescription(`Failed to parse member \`${args[0]}\`.`).send()
         const userconf = bot.getUser(user.id);
-        const { pugUpvotes, pugDownvotes } = userconf;
+        const { pugUpvotes, pugDownvotes, pupDownvotes, pupUpvotes } = userconf;
+        const type = (pugUpvotes || 0) + (pugDownvotes || 0) > (pupUpvotes || 0) + (pupDownvotes || 0) ? 'pugs' : 'pups';
 
         return bot.createEmbed(message)
-            .setTitle(`${userconf.getVerified()?.username}'s Pugs Votes`)
+            .setTitle(`${userconf.getVerified()?.username}'s ${type == 'pugs' ? 'PUGs' : 'PUPs'} Votes`)
             .setDescription(`${user} currently has:`)
             .addFields([
                 {
                     name: 'Upvotes:',
-                    value: `${pugUpvotes || 0}`,
+                    value: `${type == "pugs" ? pugUpvotes : pupUpvotes || 0}`,
                     inline: true
                 },
                 {
                     name: 'Downvotes:',
-                    value: `${pugDownvotes || 0}`,
+                    value: `${type == "pugs" ? pugDownvotes : pupDownvotes || 0}`,
                     inline: true
                 }
             ])
