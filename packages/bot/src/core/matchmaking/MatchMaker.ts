@@ -1,10 +1,10 @@
-import { ChannelType, Collection, Message, MessageEditOptions, PermissionFlagsBits, VoiceChannel } from "discord.js";
+import { ChannelType, Collection, GuildMember, Message, MessageEditOptions, PermissionFlagsBits, VoiceChannel } from "discord.js";
 import { Bot, verifiedUsers } from "../../Bot";
 import { VerifiedConfig } from "../../types/config/VerifiedConfig";
 import { Util } from "../../util/Util";
 import { Party } from "../party/Party";
 import { Queue, queueGroup } from "./Queue";
-const playersPerGame = 8;
+export const playersPerGame = 8;
 const countdownDuration = 10000;
 
 export class MatchMaker {
@@ -356,4 +356,27 @@ ${party ? party.members.map(m => `<@${m.id}> ${!connectedMembers.has(m.id) ? !th
         await this.bot.rankedManager.createGame(groups);
 
     }
+    async addToQueueChannel(member: GuildMember) {
+        // move members from join queue to their own queue
+        const joinQueue = <VoiceChannel>await this.bot.parseChannel(this.bot.config.channels.queue, this.bot.getMainGuild()!);
+        if (!joinQueue) return;
+        const verifiedUser = this.bot.getVerifiedUser({ id: member.id });
+        if (!verifiedUser) return;
+        const party = verifiedUser?.getUser().getParty();
+        if (!(party?.leader.id !== verifiedUser.id && party?.autowarp && joinQueue.members.has(party?.leader.id!))) {
+            const partyChannel = await this.bot.matchMaking.getQueueChannel(verifiedUser);
+            if (!partyChannel) return this.bot.log(`&e[QUEUES] Could not find/create party channel for ${verifiedUser.username}`);
+
+            // member?.voice.setChannel(partyChannel).catch(async e => {
+            if (member) this.bot.api.workers.moveMember(member?.id, partyChannel.id).catch(async e => {
+                // retry in the rare case the channel gets deleted the moment it tries to move people:
+                this.bot.log(`&7Rare error occured: couldnt move users, retrying `)
+                const channel = await this.bot.matchMaking.getQueueChannel(verifiedUser);
+                if (!channel) return this.bot.log(`&e[QUEUES] Could not find/create party channel for ${verifiedUser.username} SECOND TIME!!!!!!!`);
+                // member?.voice.setChannel(channel).catch(e => console.error('it happened again oh well'));
+                this.bot.api.workers.moveMember(member.id, channel.id).catch(e => console.error('it happened again oh well'));
+            });
+        }
+    }
+
 }

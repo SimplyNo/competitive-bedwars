@@ -5,6 +5,7 @@ import { RawVerifiedConfig, VerifiedConfig } from "../../types/config/VerifiedCo
 import { AttachmentBuilder, ChannelType, Collection, Message, MessageFlags, PermissionFlagsBits, TextChannel } from "discord.js";
 import { Util } from "../../util/Util";
 import { Party } from "../party/Party";
+import { playersPerGame } from "../matchmaking/MatchMaker";
 
 export const rbwGames = new Enmap<string, RawRankedGame>({
     name: 'games'
@@ -124,9 +125,9 @@ export class RankedGameManager {
             const team1Elo = team1.reduce((prev, curr) => prev + curr.rbw.elo, 0);
             const team2Elo = team2.reduce((prev, curr) => prev + curr.rbw.elo, 0);
             console.log(`assigning team:`, players.map(p => p.username));
-            if (team1Elo <= team2Elo && team1.length < 4) {
+            if (team1Elo <= team2Elo && team1.length < (playersPerGame / 2)) {
                 team1.push(...players);
-            } else if (team2.length < 4) {
+            } else if (team2.length < (playersPerGame / 2)) {
                 team2.push(...players);
             } else {
                 team1.push(...players);

@@ -86,21 +86,8 @@ Do not leave the game, otherwise, you will be issued a strike. Wait for the play
         };
         if (newState.channel) {
             if (newState.channelId === queue) {
-                if (!(party?.leader.id !== verifiedUser.id && party?.autowarp && newState.channel.members.has(party?.leader.id!))) {
-                    const partyChannel = await bot.matchMaking.getQueueChannel(verifiedUser);
-                    if (!partyChannel) return bot.log(`&e[QUEUES] Could not find/create party channel for ${verifiedUser.username}`);
-
-                    const member = await verifiedUser.getUser().resolveMember();
-                    // member?.voice.setChannel(partyChannel).catch(async e => {
-                    if (member) bot.api.workers.moveMember(member?.id, partyChannel.id).catch(async e => {
-                        // retry in the rare case the channel gets deleted the moment it tries to move people:
-                        bot.log(`&7Rare error occured: couldnt move users, retrying `)
-                        const channel = await bot.matchMaking.getQueueChannel(verifiedUser);
-                        if (!channel) return bot.log(`&e[QUEUES] Could not find/create party channel for ${verifiedUser.username} SECOND TIME!!!!!!!`);
-                        // member?.voice.setChannel(channel).catch(e => console.error('it happened again oh well'));
-                        bot.api.workers.moveMember(member.id, channel.id).catch(e => console.error('it happened again oh well'));
-                    });
-                }
+                const member = await verifiedUser.getUser().resolveMember();
+                if (member) bot.matchMaking.addToQueueChannel(member);
             }
             if ((await bot.matchMaking.getQueueChannel(verifiedUser, false))?.id === newState.channel?.id) {
 

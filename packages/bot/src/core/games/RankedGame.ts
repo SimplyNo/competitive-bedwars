@@ -1,4 +1,4 @@
-import { GuildMember, PermissionFlagsBits, ActionRowBuilder, ButtonBuilder, ButtonStyle, TextBasedChannel, BaseMessageOptions, GuildTextBasedChannel, TextChannel } from "discord.js";
+import { GuildMember, PermissionFlagsBits, ActionRowBuilder, ButtonBuilder, ButtonStyle, TextBasedChannel, BaseMessageOptions, GuildTextBasedChannel, TextChannel, VoiceChannel } from "discord.js";
 import { Bot } from "../../Bot";
 import { NonFunctionProperties, ServerConfig } from "../../types/config/ServerConfig";
 import { Util } from "../../util/Util";
@@ -157,6 +157,12 @@ export class RankedGame {
         this.update({
             active: false
         })
+        const joinQueue = <VoiceChannel>await this.bot.parseChannel(this.bot.config.channels.queue, this.bot.getMainGuild()!);
+        for (const [id, member] of joinQueue.members) {
+            if (this.players.some(p => p.id === member.id)) {
+                this.bot.matchMaking.addToQueueChannel(member);
+            }
+        }
         const voiceChannel = await this.bot.parseChannel(this.voiceChannel, this.bot.getMainGuild()!);
         const textChannel = await this.bot.parseChannel(this.textChannel, this.bot.getMainGuild()!);
         const team2Voice = await this.bot.parseChannel(this.game?.team2Voice, this.bot.getMainGuild()!);
@@ -187,5 +193,7 @@ export class RankedGame {
 
             // channel.delete().catch(e => this.bot.log(`&c-> failed to delete channel ${channel.name}. probably already deleted`));
         })
+
+
     }
 }
