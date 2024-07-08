@@ -54,7 +54,7 @@ export default class InfoCommand extends Command {
             name: verified.username!,
             elite: false,
             wins: rbw.wins,
-            wlr: (Math.floor(rbw.wins / (rbw.losses) * 100) / 100) || 0,
+            wlr: verified.ranked().getStat('wlr'),
             mvpRate: (Math.floor(rbw.mvps / (rbw.wins + rbw.losses) * 100)) || 0,
             mvps: rbw.mvps,
             pos: verified.ranked().getPosition(),
